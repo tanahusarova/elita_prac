@@ -1,5 +1,5 @@
 interface Props {
-    propWhichIsArray: string[];
+    propWhichIsArray: Array<string>;
     name:string;
   }
 

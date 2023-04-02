@@ -5,7 +5,7 @@ import PropsString from './PropsString';
 const MyPlans = () => {
   const [date, setDate] = useState('');
 
-const propString = new PropsString(['vlastne', 'spolocne'], "Mine");
+const propString = new PropsString(['private', 'public'], "Mine");
 
  return (
     <div>

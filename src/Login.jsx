@@ -1,5 +1,7 @@
 import {useState, useRef, useEffect, useContext} from "react"
 const LOGIN_URL = '/auth';
+import { useNavigate } from "react-router-dom";
+
 
 export const Login = (props) => {
     const userRef = useRef();
@@ -10,8 +12,13 @@ export const Login = (props) => {
     const [errMsg, setErrMsg] = useState();
     const [success, setSuccess] = useState(false);
 
+    let navigate = useNavigate(); 
     const handleSubmit = async (e) => {
+    //pridat kontrolu uzivatela
+      let path = `/calendar`; 
+      navigate(path);
     }
+
 
     return (
         <div>
@@ -49,7 +56,8 @@ export const Login = (props) => {
                 />
         <button 
             className="button-front-page" 
-            type="submit" >Log In</button>
+            type="submit" 
+            >Log In</button>
         </form>
         <button className="link-btn" onClick={() => props.onFormSwitch('register')}>Don't have an account? Register here.</button>
         </div>

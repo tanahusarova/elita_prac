@@ -1,6 +1,8 @@
 import { set } from "date-fns";
 import React, { useState, useRef, useEffect } from "react"
 const REGISTER_URL = '/register';
+import { useNavigate } from "react-router-dom";
+
 
 
 export const Register = (props) => {
@@ -39,7 +41,12 @@ export const Register = (props) => {
         setErrMsg('');
     }, [name, email, pass])
 
+    let navigate = useNavigate(); 
     const handleSubmit = async (e) => {
+        //pridat pridanie pouzivatela
+        let path = `/calendar`; 
+        navigate(path);
+          
     }
 
     return (
