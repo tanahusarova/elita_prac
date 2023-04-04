@@ -3,6 +3,7 @@ import LongMenu from './LongMenu';
 import Props from './Props';
 import PropsString from './PropsString';
 import { getNicknames, addUser } from '../api/UserApi';
+import { strict } from 'assert';
 
 const OthersPlans = () => {
   const [date, setDate] = useState('');
@@ -14,13 +15,15 @@ const OthersPlans = () => {
 
 
 const setPropString = () => {
-  let nicknamesArray = getNicknames().then((nicknames)=>{
-    let results = new Array();
+  
+  let nicknamesArray = new Array<string>();
+  
+  getNicknames().then((nicknames)=>{
     nicknames.forEach(function (value) {
-      results.push(value);
- }); 
-    return results});
+      nicknamesArray.push(value.nickname);
+ });});
   return new PropsString(nicknamesArray, 'Others');
+
 };
 
 

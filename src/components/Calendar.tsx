@@ -29,7 +29,7 @@ export const Calendar: React.FC<{}> = ({}) => {
     
     const generateWeeks = (dates: Array<Date>) => {
         let daysInWeek = 7;
-        let tempArray = [];
+        let tempArray:any[] = [];
 
         if (dates.length % 7 !== 0) {
             let tmp = 7 - (dates.length % 7);
@@ -72,3 +72,5 @@ export const Calendar: React.FC<{}> = ({}) => {
     )
 
 }
+
+export default Calendar;

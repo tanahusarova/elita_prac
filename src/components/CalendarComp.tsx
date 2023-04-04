@@ -1,8 +1,7 @@
 import React, {useState} from "react"
-import { DatePicker } from "./components/DatePicker";
-import { NewEvent } from "./components/NewEvent";
-import { Calendar } from "./components/Calendar";
-import Plans from "./components/Plans";
+import { NewEvent } from "./NewEvent";
+import {Calendar} from "./Calendar";
+import Plans from "./Plans";
 
 
 export const CalendarComp = (props) => {
@@ -18,7 +17,7 @@ export const CalendarComp = (props) => {
     return (
         <div className="calendar-page">
             <div className='background-container'>
-            <Calendar />
+            <Calendar></Calendar>
             </div>
             <Plans/>
             <NewEvent/>
@@ -27,5 +26,5 @@ export const CalendarComp = (props) => {
     )
 }
 
-
+export default CalendarComp;
 

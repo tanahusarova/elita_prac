@@ -1,5 +1,4 @@
 import React, {useState} from "react"
-import { DatePicker } from "./components/DatePicker";
 import { NewEvent } from "./components/NewEvent";
 import { Calendar } from "./components/Calendar";
 import Plans from "./components/Plans";

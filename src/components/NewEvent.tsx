@@ -14,18 +14,18 @@ import Plans from "./Plans";
 import LongMenu from "./LongMenu";
 import Event from "./Event";
 import dayjs from "dayjs";
+import Time from "../configs/Time";
 
 
 
 export const NewEvent = () => {
 
     //nazov, typ, farba, od, do, poznamka, kto ma vidiet, kto sa ucasti
-    const { createEvent, deleteEvent} = require('../model/event_model');
     const [name, setName] = useState('');
     const [type, setType] = useState(false);
     const [color, setColor] = useState(Number("0x8ba613")); 
-    const [time_from, setFrom] = useState(0);
-    const [time_to, setTo] = React.useState(0);
+    const [time_from, setFrom] = useState(new Time(0));
+    const [time_to, setTo] = React.useState(new Time(0));
     const [comment, setComment] = useState('');
     const [date, setDate] = useState(null);
     const [next, Inc] = useState(0);
@@ -98,14 +98,14 @@ export const NewEvent = () => {
             <DateTimePicker
             defaultValue={time_from}
             disablePast
-            onChange={(newValue)=> setFrom(newValue)}
+     //       onChange={(newValue)=> setFrom(newValue)}
             views={['year', 'month', 'day', 'hours', 'minutes']}
           />
             <label htmlFor="time_to">to </label>            
             <DateTimePicker
             defaultValue={time_to}
             disablePast
-            onChange={(newValue)=> setTo(newValue)}
+     //       onChange={(newValue)=> setTo(newValue)}
             views={['year', 'month', 'day', 'hours', 'minutes']}
           />
 
@@ -116,7 +116,7 @@ export const NewEvent = () => {
             <label htmlFor="color">color</label>
             <InputColor
              initialValue="#8ba613"
-             onChange={setColor}
+      //       onChange={setColor}
              placement="right"
              />
             
@@ -126,3 +126,5 @@ export const NewEvent = () => {
         </div>
     )
 }
+
+export default NewEvent;
