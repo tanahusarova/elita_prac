@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from "react";
 import Select from "react-select";
+import ValueType from "react-select";
+import { ActionMeta } from "react-select";
 import MultiValue from "react-select";
 import OptionTypeBase from "react-select";
 import makeAnimated from 'react-select/animated';
@@ -18,6 +20,9 @@ import LongMenu from "./LongMenu";
 import Event from "./Event";
 import dayjs from 'dayjs';
 import Time from "../configs/Time";
+import { addEvent } from "../api/Events";
+import { response } from "express";
+
 
 interface OptionType {
   value: string;
@@ -54,16 +59,40 @@ export const NewEvent = () => {
     const [time_to, setTo] = useState<Date | null>(null);
     const [comment, setComment] = useState('');
     const [date, setDate] = useState('');
+    const [selectionOfParticipants, setSelectionOfParticipants] = useState<Participant[]>([]);
     const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>([]);
-
+    const [idOfevent, setIdOfEvent] = useState(-1);
 
     const animatedComponents = makeAnimated();
 
     const handleSubmit = () => {
         console.log(time_from);
 
+        //  const {id_of_type, name, from, to, date, colour } = body;
+
         let id_of_type = 2;
         if (type) id_of_type = 1;
+
+        setComment('skuskaskuska');
+
+        let idOfEvent = -1;
+        let colorString:string = '' + color;
+
+        let time_fromString:string = '';
+           if (time_from !== null) time_fromString = time_from?.toISOString();
+
+        let time_toString:string = '';
+           if (time_to !== null) time_toString = time_to?.toISOString();
+
+
+        addEvent({'id_of_type':id_of_type, 'name':name, 'from':time_from, 'to':time_to, 'date':date, 'colour':color}).then(
+          (response) => {
+            setIdOfEvent(response[0].event_id);
+        });
+      
+       console.log({color});
+
+
 
  //       const newEvent = new Event(id, id_of_type, name, time_from?.toISOString, time_to?.toISOString, color);
       //  createEvent(newEvent);
@@ -109,6 +138,19 @@ export const NewEvent = () => {
       
 
 /*
+      function handleSelectedParticipants(
+        newValue: ValueType<Participant, true>,
+        actionMeta: ActionMeta<Participant>
+      ) {
+        // `newValue` will be an array of selected options
+        const newSelectedOptions = newValue as Participant[];
+    
+        // Update the selected options state
+        setSelectedParticipants(newSelectedOptions);
+      }
+      */
+
+/*
       const handleSelectPart = (selected: MultiValue<Participant>) => {
         if (selected) {
           const newSelectedOptions = selected.map((option:Participant) => ({
@@ -135,22 +177,10 @@ export const NewEvent = () => {
       };
       
       useEffect(() => {
-        setSelectedParticipants(setNewOptions());
+        setSelectionOfParticipants(setNewOptions());
       }, []);
       
-    
-    
-      const optionsNamesParticipants = [
-        { value: 1, label: 'jozko' },
-        { value: 2, label: 'ferko' },
-        { value: 3, label: 'lubka' },
-        { value: 4, label: 'kika' }
-
-      ]
-    
-    
-
-
+  
     return (
       <div>
         <div className="new-event-container">
@@ -168,7 +198,8 @@ export const NewEvent = () => {
              closeMenuOnSelect={true}
              components={animatedComponents}
              isMulti
-             options={selectedParticipants}
+             value={selectedParticipants}
+             options={selectionOfParticipants}
              />
 
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -198,8 +229,9 @@ export const NewEvent = () => {
              onChange={handleColorChange}
              placement="right"
              />
+             <p>color: {idOfevent}</p>
         <div className="buttons-new-event">
-        <button className="button-front-page" type="submit" onClick={() => handleSubmit()}>Save changes</button>
+        <button className="button-front-page" onClick={() => handleSubmit()}>Save changes</button>
         <button className="button-front-page">Delete event</button>
         </div>
 

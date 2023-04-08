@@ -9,7 +9,13 @@ function addEvent(event) {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(event)
-    });
+    }).then((response) => {
+            if (!response.ok) {
+                throw new Error("tato chyba");
+            }
+            console.log(response.json());
+            return response.json();
+        })
 }
 
 async function getEvent(id) {
@@ -84,5 +90,15 @@ async function getComment(id) {
         });
 }
 
+function addComment(comment) {
+    return fetch("http://localhost:3001/events/comments", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(comment)
+    });
+}
+
 export {addEvent, getEvent, getEventByDate, addObserver, 
-        addParticipant, deleteEvent, getComment};
+        addParticipant, deleteEvent, getComment, addComment};
