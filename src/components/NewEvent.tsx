@@ -20,7 +20,7 @@ import LongMenu from "./LongMenu";
 import Event from "./Event";
 import dayjs from 'dayjs';
 import Time from "../configs/Time";
-import { addComment, addEvent, deleteEvent } from "../api/Events";
+import { addComment, addEvent, addObserver, addParticipant, deleteEvent } from "../api/Events";
 import { response } from "express";
 import SharedInformations from "./SharedInformations";
 import PropsNewEvent from "./props/PropsNewEvent";
@@ -62,14 +62,15 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
     const [name, setName] = useState('');
     const [type, setType] = useState(3);
     const [typePrivate, setTypePrivate] = useState(false);
-    const [color, setColor] = useState('0x8ba613'); 
+    const [color, setColor] = useState('#90a822ff'); 
     const [time_from, setFrom] = useState<Date | null>(null);
     const [time_to, setTo] = useState<Date | null>(null);
     const [comment, setComment] = useState('');
     const [date, setDate] = useState('');
     const [selectionOfParticipants, setSelectionOfParticipants] = useState<Participant[]>([]);
     const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>([]);
-    const [idOfevent, setIdOfEvent] = useState(11);
+    const [hiddenFromParticipants, sethiddenPart] = useState<Participant[]>([]);
+    const [idOfevent, setIdOfEvent] = useState(31);
     const [newE, setNewE] = useState(true);
 
     const animatedComponents = makeAnimated();
@@ -77,32 +78,61 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
     const handleSubmit = () => {
         console.log(time_from);
 
-        //  const {id_of_type, name, from, to, date, colour } = body;
-
-        setComment('skuskaskuska');
-
-
         let time_fromString:string = '';
            if (time_from !== null) time_fromString = time_from?.toISOString();
 
         let time_toString:string = '';
            if (time_to !== null) time_toString = time_to?.toISOString();
 
-
-        addEvent({'id_of_type':type, 'name':name, 'from':time_from, 'to':time_to, 'date':date, 'colour':color})
-        .then((event)=>{
+        let id = idOfevent;
+       addEvent({'id_of_type':type, 'name':name, 'from':time_fromString, 'to':time_toString, 'date':date, 'colour':color})
+       .then((event)=>
+       {
           setIdOfEvent(event[0].event_id);
+          let id:number = event[0].event_id;
+          addParticipant({'event_id': id, 'user_id':props.sharedInformations.idOfLoggedUser});
+          addObserver({'event_id': id, 'user_id':props.sharedInformations.idOfLoggedUser, 'visible':true});
+
+          if (comment)
+              addComment({'event_id': id, 'user_id': props.sharedInformations.idOfLoggedUser, 'comment': comment});
+
+          for (let i = 0; i < selectedParticipants.length; i++){
+              addParticipant({'event_id': id, 'user_id':selectedParticipants[i].value});
+          }
+        
+          for (let i = 0; i < hiddenFromParticipants.length; i++){
+            addObserver({'event_id': id, 'user_id':hiddenFromParticipants[i].value, 'visible':false});
+          }
+        
+          var tmp = selectionOfParticipants.filter((item) => !hiddenFromParticipants.includes(item));
+          for (let i = 0; i < hiddenFromParticipants.length; i++){
+            addObserver({'event_id': id, 'user_id':tmp[i].value, 'visible':true});            }
+
        });
-       console.log(idOfevent);
 
-      //  addComment({'event_id': 8, 'user_id': props.sharedInformations.idOfLoggedUser, 'comment': comment});
+//       console.log(idOfevent);
+//       addParticipant({'event_id': id, 'user_id':props.sharedInformations.idOfLoggedUser});
+//       addObserver({'event_id': id, 'user_id':props.sharedInformations.idOfLoggedUser, 'visible':true});
+
+/*
+      if (comment)
+        addComment({'event_id': id, 'user_id': props.sharedInformations.idOfLoggedUser, 'comment': comment});
       
-       console.log({color});
+      //const {event_id, user_id} = body;
 
+      for (let i = 0; i < selectedParticipants.length; i++){
+        addParticipant({'event_id': idOfevent, 'user_id':selectedParticipants[i].value});
+      }
 
+      for (let i = 0; i < hiddenFromParticipants.length; i++){
+        addObserver({'event_id': idOfevent, 'user_id':hiddenFromParticipants[i].value, 'visible':false});
+      }
 
- //       const newEvent = new Event(id, id_of_type, name, time_from?.toISOString, time_to?.toISOString, color);
-      //  createEvent(newEvent);
+      var tmp = selectionOfParticipants.filter((item) => !hiddenFromParticipants.includes(item));
+      for (let i = 0; i < hiddenFromParticipants.length; i++){
+        addObserver({'event_id': idOfevent, 'user_id':tmp[i].value, 'visible':true});
+      }
+      */
         
     }
 
@@ -150,7 +180,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
 
       const handleDelete = () => {
         setName('');
-        setColor('0x8ba613');
+        setColor('#90a822ff');
         setTypePrivate(false);
         setFrom(null);
         setDate('');
@@ -158,34 +188,6 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
         setComment('');
         deleteEvent(idOfevent);
       };
-      
-
-/*
-      function handleSelectedParticipants(
-        newValue: ValueType<Participant, true>,
-        actionMeta: ActionMeta<Participant>
-      ) {
-        // `newValue` will be an array of selected options
-        const newSelectedOptions = newValue as Participant[];
-    
-        // Update the selected options state
-        setSelectedParticipants(newSelectedOptions);
-      }
-      */
-
-/*
-      const handleSelectPart = (selected: MultiValue<Participant>) => {
-        if (selected) {
-          const newSelectedOptions = selected.map((option:Participant) => ({
-            label: option.label as string,
-            id: option.id as number,
-          }));
-          setSelectedParticipants(newSelectedOptions);
-        } else {
-          setSelectedParticipants([]);
-        }
-      };
-      */
 
       const setNewOptions = () => {
   
@@ -193,7 +195,8 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
         
         getNicknames().then((nicknames)=>{
           nicknames.forEach(function (value:Nickname) {
-            nicknamesArray.push(new ParticipantP(value.user_id, value.nickname));
+            if (value.user_id !== props.sharedInformations.idOfLoggedUser)
+                nicknamesArray.push(new ParticipantP(value.user_id, value.nickname));
        });});
         return nicknamesArray;
       
@@ -211,7 +214,8 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
         setColor(props.event.colour);
       }, [props.event]);
       
-  
+
+
     return (
       <div>
         <div className="new-event-container">
@@ -230,7 +234,18 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
              components={animatedComponents}
              isMulti
              options={selectionOfParticipants}
-             />
+             onChange={(selectedOptions) => 
+              setSelectedParticipants(selectedOptions as Participant[])} />
+
+            <label htmlFor="hidden"> hidden from </label>
+            <Select
+             isDisabled={typePrivate}
+             closeMenuOnSelect={true}
+             components={animatedComponents}
+             isMulti
+             options={selectionOfParticipants.filter(item => !selectedParticipants.includes(item))}
+             onChange={(selectedOptions) => 
+              sethiddenPart(selectedOptions as Participant[])} />
 
             <LocalizationProvider dateAdapter={AdapterDayjs}>
           
@@ -255,13 +270,15 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
            
             <label htmlFor="color">color</label>
             <InputColor
-             initialValue="#8ba613"
+             initialValue="#90a822ff"
              onChange={handleColorChange}
              placement="right"
              />
         <div className="buttons-new-event">
-        <button className="button-front-page" onClick={() => handleSubmit()}>Save changes</button>
-        <button className="button-front-page" onClick={() => handleDelete()}>Delete event</button>
+        <button className="button-front-page" 
+          onClick={() => handleSubmit()}>Save changes</button>
+        <button className="button-front-page" 
+          onClick={() => handleDelete()}>Delete event</button>
         </div>
 
         </form>

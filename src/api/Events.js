@@ -9,17 +9,20 @@ function addEvent(event) {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(event)
-    }).then((response) => {
+    })
+    .then((response) => {
             if (!response.ok) {
                 throw new Error("tato chyba");
             }
             console.log(response.json());
             return response.json();
         })
+
 }
 
 async function getEvent(id) {
-    return fetch(`http://localhost:3001/events/event/${id}`).then(
+    return fetch(`http://localhost:3001/events/event/${id}`)
+    .then(
         (response) => {
             if (!response.ok) {
                 throw new Error("tato chyba");
@@ -31,6 +34,7 @@ async function getEvent(id) {
             console.log("chyba 2");
             return [];
         });
+        
 }
 
 async function getEventByDate(id_of_user, id_of_owner, date) {
@@ -49,7 +53,20 @@ async function getEventByDate(id_of_user, id_of_owner, date) {
 }
 
 async function updateEvent(id_event, body) {
-    return fetch(`http://localhost:3001/events/update/${id_event}`);
+    return fetch(`http://localhost:3001/events/update/${id_event}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body)
+    })
+    .then((response) => {
+            if (!response.ok) {
+                throw new Error("tato chyba");
+            }
+            console.log(response.json());
+            return response.json();
+        });
 }
 
 //upravit na vymazanie, spytat sa
