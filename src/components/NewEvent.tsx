@@ -72,24 +72,30 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
     const [hiddenFromParticipants, sethiddenPart] = useState<Participant[]>([]);
     const [idOfevent, setIdOfEvent] = useState(31);
     const [newE, setNewE] = useState(true);
+    const [pomocnyText, setPomocnyText] = useState('vsetko je v poriadku');
+
 
     const animatedComponents = makeAnimated();
+
+    function delay(ms: number) {
+      return new Promise( resolve => setTimeout(resolve, ms) );
+  }
 
     const handleSubmit = () => {
         console.log(time_from);
 
         let time_fromString:string = '';
-           if (time_from !== null) time_fromString = time_from?.toISOString();
+           if (time_from) time_fromString = time_from?.toISOString();
 
         let time_toString:string = '';
-           if (time_to !== null) time_toString = time_to?.toISOString();
+           if (time_to) time_toString = time_to?.toISOString();
 
-        let id = idOfevent;
-       addEvent({'id_of_type':type, 'name':name, 'from':time_fromString, 'to':time_toString, 'date':date, 'colour':color})
-       .then((event)=>
-       {
-          setIdOfEvent(event[0].event_id);
-          let id:number = event[0].event_id;
+       
+       addEvent({'id_of_type':type, 'name':name, 'from':time_fromString, 'to':time_toString, 'date':date, 'colour':color}).then((event)=> {
+          setPomocnyText('som tu preslo to');
+
+          setIdOfEvent(event.event_id);
+          let id:number = event.event_id;
           addParticipant({'event_id': id, 'user_id':props.sharedInformations.idOfLoggedUser});
           addObserver({'event_id': id, 'user_id':props.sharedInformations.idOfLoggedUser, 'visible':true});
 
@@ -108,7 +114,12 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
           for (let i = 0; i < hiddenFromParticipants.length; i++){
             addObserver({'event_id': id, 'user_id':tmp[i].value, 'visible':true});            }
 
-       });
+       }).catch((error) => {
+        // Better way would be to throw error here and let the client handle (e.g. show error message)
+        // Returning empty array for simplicity only!
+        console.log("teraz sme tu");
+        delay(5000);
+    });;
 
 //       console.log(idOfevent);
 //       addParticipant({'event_id': id, 'user_id':props.sharedInformations.idOfLoggedUser});
@@ -220,6 +231,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
       <div>
         <div className="new-event-container">
         <form className="new-event-buttons">
+          <label>{pomocnyText}</label>
             <label htmlFor="name">name </label>
             <input value={name} onChange={(e) => setName(e.target.value)} type="name" placeholder="konzultacie so skolitelom" id="name" name="name" />
 

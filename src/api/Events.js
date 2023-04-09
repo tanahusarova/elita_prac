@@ -139,5 +139,5 @@ function addComment(comment) {
     });
 }
 
-export {addEvent, getEvent, getEventByDate, addObserver, 
+export {addEvent, getEvent, getEventByDate, addObserver, updateEvent,
         addParticipant, deleteEvent, getComment, addComment};
