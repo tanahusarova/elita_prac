@@ -5,6 +5,7 @@ import { monthDates } from "../configs/MonthDays";
 import PropsButtonEvent from "./props/PropsButtonEvent";
 import { getComment, getEvent } from "../api/Events";
 import EventInf from "./props/EventInf";
+import PropsNewEvent from "./props/PropsNewEvent";
 
 class Comment{
     comment:string;
@@ -16,9 +17,14 @@ class Comment{
     }
 }
 
-export const ButtonEvent: React.FC<EventInf> = (event) => {
+type ChildComponentProps = {
+    handleEventChoice: (event:PropsNewEvent) => void;
+    event: EventInf;
+  };
+
+export const ButtonEvent: React.FC<ChildComponentProps> = (prop) => {
     const buttonStyle = {
-        color: event.colour,
+        color: prop.event.colour,
     };
 
 
@@ -28,19 +34,21 @@ export const ButtonEvent: React.FC<EventInf> = (event) => {
     const [commentShow, setCommentShow] = useState(false);
 
     useEffect(() => {
-        let string = '\n FROM: ' + event.from_time + '   TO: ' + event.to_time;
+        let string = '\n FROM: ' + prop.event.from_time + '   TO: ' + prop.event.to_time;
         setText(string);
-        if(event.event_id < 0) setComment('');
+        if(prop.event.event_id < 0) setComment('');
 
       }, []);
 
     const handleClick = () =>{
-        if (event.event_id < 0) return;
+        if (prop.event.event_id < 0) return;
+        prop.handleEventChoice(new PropsNewEvent(prop.event.name, prop.event.from_time, prop.event.to_time, 
+            '', prop.event.colour));
     }
       
 
     const findComments = () => {
-        if (event.event_id < 0) return;
+        if (prop.event.event_id < 0) return;
   
         if (commentShow){
             setCommentShow(false);
@@ -49,7 +57,7 @@ export const ButtonEvent: React.FC<EventInf> = (event) => {
         }
         else{
             var string = '';
-            getComment(event.event_id).then((com)=>{
+            getComment(prop.event.event_id).then((com)=>{
                 if (com.length == 0) {
                     return;
                 }
@@ -83,10 +91,10 @@ export const ButtonEvent: React.FC<EventInf> = (event) => {
     return(
         <div>
         <label style={{
-      color: event.colour,
+      color: prop.event.colour,
       fontWeight: 'bold',
       border: 'none',
-    }}>{event.name}</label>
+    }}>{prop.event.name}</label>
         <button style={buttonStyle} onClick={handleClick}> 
             {text} 
         </button>

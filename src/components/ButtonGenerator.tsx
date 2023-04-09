@@ -9,9 +9,14 @@ import { getEventByDate } from "../api/Events";
 import ButtonEvent from "./ButtonEvent";
 import EventInf from "./props/EventInf";
 import EventInfFromQuery from "./props/EventInfFromQuery";
+import PropsNewEvent from "./props/PropsNewEvent";
 
+type ChildComponentProps = {
+  handleEventChoice: (event:PropsNewEvent) => void;
+  forButtonGenerator: PropsButtonGenerator;
+};
 
-export const ButtonGenerator: React.FC<PropsButtonGenerator> = ({idOfLogedUser, idOfUserWithPlans, date}) => {
+export const ButtonGenerator: React.FC<ChildComponentProps> = (prop) => {
     //doplnit fetchovanie z databazy a generovanie eventbuttonikov
     //id mam od loginu, datum zo stlacenia butoniku, a id of user z vyberu v plans
     const [eventsByDate, setEventsByDate] = useState<EventInf[]>([]);
@@ -28,7 +33,7 @@ export const ButtonGenerator: React.FC<PropsButtonGenerator> = ({idOfLogedUser, 
   function loadEvents() {
     const newEvents = new Array<EventInf>();
 
-    getEventByDate(idOfLogedUser, idOfUserWithPlans, date).then((eventsByDate)=>{
+    getEventByDate(prop.forButtonGenerator.idOfLogedUser, prop.forButtonGenerator.idOfUserWithPlans, prop.forButtonGenerator.date).then((eventsByDate)=>{
         eventsByDate.forEach(function (value:EventInf) {
              if (value.visible) {
                  newEvents.push(new EventInfFromQuery(value.event_id, value.type_id, value.name, 
@@ -46,7 +51,7 @@ export const ButtonGenerator: React.FC<PropsButtonGenerator> = ({idOfLogedUser, 
       useEffect(() => {
         loadEvents();
 
-      }, [idOfUserWithPlans, date]);
+      }, [prop.forButtonGenerator.idOfUserWithPlans, prop.forButtonGenerator.date]);
       
 
       const handleClick1 = () =>{
@@ -72,7 +77,7 @@ export const ButtonGenerator: React.FC<PropsButtonGenerator> = ({idOfLogedUser, 
             <div className="event-buttons">
              {eventsByDate.map((value:EventInf) => (
 
-                <ButtonEvent{...value} />
+                <ButtonEvent handleEventChoice={prop.handleEventChoice} event={value} />
                
              ))}
           </div>

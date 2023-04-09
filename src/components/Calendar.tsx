@@ -11,7 +11,7 @@ type ChildComponentProps = {
 export const Calendar: React.FC<ChildComponentProps> = (prop) => {
 
     function handleClick() {
-        let string = '2008-11-11';
+        let string = '2023-04-09';
         prop.handleDateChoice(string);
     }
 

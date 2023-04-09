@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 import { NewEvent } from "../components/NewEvent";
 import {Calendar} from "../components/Calendar";
 import Plans from "../components/Plans";
@@ -27,13 +27,21 @@ export const CalendarPage = (id:PropsIdUser) => {
         setPropsNewEvent(new PropsNewEvent(name, time_from, time_to, comment, colour));
       }
 
+      function handleEventChoice(event:PropsNewEvent) {
+        setPropsNewEvent(event);
+      }
+
+      useEffect(() => {
+      }, [propsNewEvent]);
+
+    //do new event sa musi dostat natiahnuty event z plans, z toho na ktore sa kliklo
     return (
         <div className="calendar-page">
             <div className='background-container'>
             <Calendar handleDateChoice={handleDateChoice}/> 
             </div>
-            <Plans {...informations}/>
-            <NewEvent/>
+            <Plans handleEventChoice={handleEventChoice} sharedInformations={informations}/>
+            <NewEvent event={propsNewEvent} sharedInformations={informations}/>
 
         </div>
     )

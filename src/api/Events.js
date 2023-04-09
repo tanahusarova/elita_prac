@@ -48,9 +48,31 @@ async function getEventByDate(id_of_user, id_of_owner, date) {
         });
 }
 
+async function updateEvent(id_event, body) {
+    return fetch(`http://localhost:3001/events/update/${id_event}`);
+}
+
 //upravit na vymazanie, spytat sa
-async function deleteEvent(body) {
-    return 0;
+async function deleteEvent(id) {
+    fetch(`http://localhost:3001/events/event/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Data was successfully deleted:', data);
+      })
+      .catch(error => {
+        console.error('There was a problem deleting the data:', error);
+      });
+      
 }
 
 

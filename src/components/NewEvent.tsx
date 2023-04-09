@@ -20,12 +20,14 @@ import LongMenu from "./LongMenu";
 import Event from "./Event";
 import dayjs from 'dayjs';
 import Time from "../configs/Time";
-import { addEvent } from "../api/Events";
+import { addComment, addEvent, deleteEvent } from "../api/Events";
 import { response } from "express";
+import SharedInformations from "./SharedInformations";
+import PropsNewEvent from "./props/PropsNewEvent";
 
 
 interface OptionType {
-  value: string;
+  value: number;
   label: string;
 }
 
@@ -49,11 +51,17 @@ class ParticipantP implements Participant{
   }
 }
 
-export const NewEvent = () => {
+type ChildComponentProps = {
+  event: PropsNewEvent;
+  sharedInformations: SharedInformations;
+};
+
+export const NewEvent: React.FC<ChildComponentProps> = (props) => {
 
     //nazov, typ, farba, od, do, poznamka, kto ma vidiet, kto sa ucasti
     const [name, setName] = useState('');
-    const [type, setType] = useState(false);
+    const [type, setType] = useState(3);
+    const [typePrivate, setTypePrivate] = useState(false);
     const [color, setColor] = useState('0x8ba613'); 
     const [time_from, setFrom] = useState<Date | null>(null);
     const [time_to, setTo] = useState<Date | null>(null);
@@ -61,7 +69,8 @@ export const NewEvent = () => {
     const [date, setDate] = useState('');
     const [selectionOfParticipants, setSelectionOfParticipants] = useState<Participant[]>([]);
     const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>([]);
-    const [idOfevent, setIdOfEvent] = useState(-1);
+    const [idOfevent, setIdOfEvent] = useState(11);
+    const [newE, setNewE] = useState(true);
 
     const animatedComponents = makeAnimated();
 
@@ -70,13 +79,8 @@ export const NewEvent = () => {
 
         //  const {id_of_type, name, from, to, date, colour } = body;
 
-        let id_of_type = 2;
-        if (type) id_of_type = 1;
-
         setComment('skuskaskuska');
 
-        let idOfEvent = -1;
-        let colorString:string = '' + color;
 
         let time_fromString:string = '';
            if (time_from !== null) time_fromString = time_from?.toISOString();
@@ -85,10 +89,13 @@ export const NewEvent = () => {
            if (time_to !== null) time_toString = time_to?.toISOString();
 
 
-        addEvent({'id_of_type':id_of_type, 'name':name, 'from':time_from, 'to':time_to, 'date':date, 'colour':color}).then(
-          (response) => {
-            setIdOfEvent(response[0].event_id);
-        });
+        addEvent({'id_of_type':type, 'name':name, 'from':time_from, 'to':time_to, 'date':date, 'colour':color})
+        .then((event)=>{
+          setIdOfEvent(event[0].event_id);
+       });
+       console.log(idOfevent);
+
+      //  addComment({'event_id': 8, 'user_id': props.sharedInformations.idOfLoggedUser, 'comment': comment});
       
        console.log({color});
 
@@ -108,11 +115,10 @@ export const NewEvent = () => {
     
 
     const options: OptionType[] = [
-        { value: 'private', label: 'skola',  },
-        { value: 'private', label: 'hobby' },
-        { value: 'private', label: 'stretnutia' },
-        { value: 'public', label: 'spolocne plany' },
-        { value: 'public', label: 'ine' }
+        { value: 1, label: 'school',  },
+        { value: 2, label: 'hobby' },
+        { value: 3, label: 'other plans' },
+        { value: 4, label: 'mutual plans' },
 
 
       ]
@@ -121,19 +127,36 @@ export const NewEvent = () => {
 
       const handleSelection = (selectedOption: OptionType | null) =>{
         if (selectedOption === null) {
-          setType(true);
+          setTypePrivate(true);
           return;
         }
 
-        if (selectedOption.value === 'private')
-                  setType(true);
+        if (selectedOption.value < 4){
+          setTypePrivate(true);
+          setType(selectedOption.value);
+        }
 
-        else setType(false);
+        else{
+          setTypePrivate(false)
+          setType(selectedOption.value);
+
+        }
       };
 
 
       const handleColorChange = (newColor: { hex: string; }) => {
         setColor(newColor.hex);
+      };
+
+      const handleDelete = () => {
+        setName('');
+        setColor('0x8ba613');
+        setTypePrivate(false);
+        setFrom(null);
+        setDate('');
+        setTo(null);
+        setComment('');
+        deleteEvent(idOfevent);
       };
       
 
@@ -179,12 +202,20 @@ export const NewEvent = () => {
       useEffect(() => {
         setSelectionOfParticipants(setNewOptions());
       }, []);
+
+      useEffect(() => {
+        setName(props.event.name);
+        setFrom(new Date(props.event.time_from));
+        setTo(new Date(props.event.time_to));
+        setComment(props.event.comment);
+        setColor(props.event.colour);
+      }, [props.event]);
       
   
     return (
       <div>
         <div className="new-event-container">
-        <form onSubmit={handleSubmit} className="new-event-buttons">
+        <form className="new-event-buttons">
             <label htmlFor="name">name </label>
             <input value={name} onChange={(e) => setName(e.target.value)} type="name" placeholder="konzultacie so skolitelom" id="name" name="name" />
 
@@ -194,11 +225,10 @@ export const NewEvent = () => {
                options={options} />
 
             <Select
-             isDisabled={type}
+             isDisabled={typePrivate}
              closeMenuOnSelect={true}
              components={animatedComponents}
              isMulti
-             value={selectedParticipants}
              options={selectionOfParticipants}
              />
 
@@ -229,10 +259,9 @@ export const NewEvent = () => {
              onChange={handleColorChange}
              placement="right"
              />
-             <p>color: {idOfevent}</p>
         <div className="buttons-new-event">
         <button className="button-front-page" onClick={() => handleSubmit()}>Save changes</button>
-        <button className="button-front-page">Delete event</button>
+        <button className="button-front-page" onClick={() => handleDelete()}>Delete event</button>
         </div>
 
         </form>
