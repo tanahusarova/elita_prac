@@ -239,7 +239,6 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
 
             <label htmlFor="hidden"> hidden from </label>
             <Select
-             isDisabled={typePrivate}
              closeMenuOnSelect={true}
              components={animatedComponents}
              isMulti
