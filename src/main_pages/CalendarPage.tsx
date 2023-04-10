@@ -19,6 +19,8 @@ export const CalendarPage = (id:PropsIdUser) => {
         let tmp = informations;
         tmp.date = d;
         setInf(tmp);
+        console.log(informations.date);
+
       }
 
       function handlePropsChange(name: string, time_from: string,time_to: string,

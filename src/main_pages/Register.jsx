@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react"
 import { useNavigate } from "react-router-dom";
+import { addUser, checkUser } from "../api/User";
 
 
 
@@ -20,6 +21,7 @@ export const Register = (props) => {
     useEffect(() => {
         console.log(email);
         setEmail(email);
+
     }, [email])
 
     useEffect(() => {
@@ -27,15 +29,29 @@ export const Register = (props) => {
         setPass(pass);
     }, [pass])
 
-    useEffect(() => {
-        setErrMsg('');
-    }, [name, email, pass])
-
     let navigate = useNavigate(); 
+
     const handleSubmit = async (e) => {
-        //pridat pridanie pouzivatela
         let path = `/calendar`; 
         navigate(path);
+
+        checkUser(email).then((res) => {
+            console.log(res.length);
+
+            if (res.length > 0)
+                setErrMsg('ALREADY USED MAIL');
+                
+            else {
+                addUser({nickname:name, mail:email, password:pass}).then(
+                    (event) => {
+                        setErrMsg('Successfully added');
+                        let path = `/calendar`; 
+                        navigate(path);
+                    }
+                ).catch((error)=>console.log(error))
+            };
+        })
+        
           
     }
 

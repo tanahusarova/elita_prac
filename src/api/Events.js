@@ -2,23 +2,44 @@ const MESSAGES_STORAGE_KEY="messages";
 
 let storage = localStorage;
 
-function addEvent(event) {
-    return fetch("http://localhost:3001/events/event", {
+
+async function addEvent(event) {
+    let response = await fetch("http://localhost:3001/events/event", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(event)
     })
-    .then((response) => {
-            if (!response.ok) {
-                throw new Error("tato chyba");
-            }
-            console.log(response.json());
-            return response.json();
-        })
 
+    if (response.status == 200) {
+        let json = await response.json(); 
+        console.log(response.json());
+        return json;
+    }
+
+    throw new Error(response.status);
 }
+
+async function addEventWithParticipants(event) {
+    let response = await fetch("http://localhost:3001/events/eventpar", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(event)
+    })
+
+    if (response.status == 200) {
+        let json = await response.json(); 
+        console.log(response.json());
+        return json;
+    }
+
+    throw new Error(response.status);
+}
+
+
 
 async function getEvent(id) {
     return fetch(`http://localhost:3001/events/event/${id}`)
@@ -140,4 +161,4 @@ function addComment(comment) {
 }
 
 export {addEvent, getEvent, getEventByDate, addObserver, updateEvent,
-        addParticipant, deleteEvent, getComment, addComment};
+        addParticipant, deleteEvent, getComment, addComment, addEventWithParticipants};

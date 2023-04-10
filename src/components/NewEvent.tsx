@@ -20,7 +20,7 @@ import LongMenu from "./LongMenu";
 import Event from "./Event";
 import dayjs from 'dayjs';
 import Time from "../configs/Time";
-import { addComment, addEvent, addObserver, addParticipant, deleteEvent } from "../api/Events";
+import { addComment, addEvent, addEventWithParticipants, addObserver, addParticipant, deleteEvent } from "../api/Events";
 import { response } from "express";
 import SharedInformations from "./SharedInformations";
 import PropsNewEvent from "./props/PropsNewEvent";
@@ -72,16 +72,13 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
     const [hiddenFromParticipants, sethiddenPart] = useState<Participant[]>([]);
     const [idOfevent, setIdOfEvent] = useState(31);
     const [newE, setNewE] = useState(true);
-    const [pomocnyText, setPomocnyText] = useState('vsetko je v poriadku');
 
 
     const animatedComponents = makeAnimated();
 
-    function delay(ms: number) {
-      return new Promise( resolve => setTimeout(resolve, ms) );
-  }
 
-    const handleSubmit = () => {
+
+   async function handleSubmit () {
         console.log(time_from);
 
         let time_fromString:string = '';
@@ -90,41 +87,25 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
         let time_toString:string = '';
            if (time_to) time_toString = time_to?.toISOString();
 
-       
-       addEvent({'id_of_type':type, 'name':name, 'from':time_fromString, 'to':time_toString, 'date':date, 'colour':color}).then((event)=> {
-          setPomocnyText('som tu preslo to');
+        let partArray = new Array<{user_id_p:number}>();
+        let obserArray = new Array<{user_id_o:number, visible:boolean}>();
+        partArray.push({user_id_p:props.sharedInformations.idOfLoggedUser});
+        obserArray.push({user_id_o:props.sharedInformations.idOfLoggedUser, visible:true});
 
-          setIdOfEvent(event.event_id);
-          let id:number = event.event_id;
-          addParticipant({'event_id': id, 'user_id':props.sharedInformations.idOfLoggedUser});
-          addObserver({'event_id': id, 'user_id':props.sharedInformations.idOfLoggedUser, 'visible':true});
 
-          if (comment)
-              addComment({'event_id': id, 'user_id': props.sharedInformations.idOfLoggedUser, 'comment': comment});
+        for (let i = 0; i < selectedParticipants.length; i++){
+          partArray.push({user_id_p:selectedParticipants[i].value});
+        }
 
-          for (let i = 0; i < selectedParticipants.length; i++){
-              addParticipant({'event_id': id, 'user_id':selectedParticipants[i].value});
-          }
-        
-          for (let i = 0; i < hiddenFromParticipants.length; i++){
-            addObserver({'event_id': id, 'user_id':hiddenFromParticipants[i].value, 'visible':false});
-          }
-        
-          var tmp = selectionOfParticipants.filter((item) => !hiddenFromParticipants.includes(item));
-          for (let i = 0; i < hiddenFromParticipants.length; i++){
-            addObserver({'event_id': id, 'user_id':tmp[i].value, 'visible':true});            }
+        for (let i = 0; i < selectionOfParticipants.length; i++){
+          let visible = !hiddenFromParticipants.includes(selectionOfParticipants[i]);
+          obserArray.push({user_id_o:selectionOfParticipants[i].value, visible:visible});
+        } 
 
-       }).catch((error) => {
-        // Better way would be to throw error here and let the client handle (e.g. show error message)
-        // Returning empty array for simplicity only!
-        console.log("teraz sme tu");
-        delay(5000);
-    });;
 
-//       console.log(idOfevent);
-//       addParticipant({'event_id': id, 'user_id':props.sharedInformations.idOfLoggedUser});
-//       addObserver({'event_id': id, 'user_id':props.sharedInformations.idOfLoggedUser, 'visible':true});
-
+        addEventWithParticipants({event:{ id_of_type: type, name: name, from: time_fromString, to: time_toString, date: date, colour: color }, participants: partArray, observers:obserArray, comments:{user_id_c:props.sharedInformations.idOfLoggedUser, comment: comment}});
+      
+          
 /*
       if (comment)
         addComment({'event_id': id, 'user_id': props.sharedInformations.idOfLoggedUser, 'comment': comment});
@@ -226,12 +207,10 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
       }, [props.event]);
       
 
-
     return (
       <div>
         <div className="new-event-container">
         <form className="new-event-buttons">
-          <label>{pomocnyText}</label>
             <label htmlFor="name">name </label>
             <input value={name} onChange={(e) => setName(e.target.value)} type="name" placeholder="konzultacie so skolitelom" id="name" name="name" />
 
@@ -255,8 +234,9 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
              components={animatedComponents}
              isMulti
              options={selectionOfParticipants.filter(item => !selectedParticipants.includes(item))}
-             onChange={(selectedOptions) => 
-              sethiddenPart(selectedOptions as Participant[])} />
+             onChange={(selectedOptions) => {
+              sethiddenPart(selectedOptions as Participant[]);
+              console.log(hiddenFromParticipants);}} />
 
             <LocalizationProvider dateAdapter={AdapterDayjs}>
           
@@ -291,7 +271,6 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
         <button className="button-front-page" 
           onClick={() => handleDelete()}>Delete event</button>
         </div>
-
         </form>
         </div>
         </div>

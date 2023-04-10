@@ -8,6 +8,21 @@ function addUser(user) {
     });
 }
 
+async function checkUser(mail) {
+    return fetch(`http://localhost:3001/users/user/${mail}`).then(
+        (response) => {
+            if (!response.ok) {
+                throw new Error("Error getting user");
+            }
+            return response.json();
+        }).catch((error) => {
+            // Better way would be to throw error here and let the client handle (e.g. show error message)
+            // Returning empty array for simplicity only!
+            console.log("Error getting user");
+            return [];
+        });
+}
+
 
 async function getNicknames() {
     return fetch("http://localhost:3001/users/nicknames").then(
@@ -32,4 +47,4 @@ async function deleteEvent(body) {
 
 
 
-export {getNicknames, addUser};
+export {getNicknames, addUser, checkUser};

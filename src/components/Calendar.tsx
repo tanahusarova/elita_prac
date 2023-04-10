@@ -10,15 +10,18 @@ type ChildComponentProps = {
 
 export const Calendar: React.FC<ChildComponentProps> = (prop) => {
 
-    function handleClick() {
-        let string = '2023-04-09';
-        prop.handleDateChoice(string);
+    const setDate = (date:number) =>{
+        let tmp:string = '2023-05-';
+        if (date < 10) tmp = '2023-05-0';
+        tmp = tmp + date;
+        prop.handleDateChoice(tmp);
+
     }
 
     const generateDates = (date: number) => {
         for (let i = 0; i < 7; i++){
             let result = <button className="date" value={date} 
-            onClick={handleClick}>
+            onClick={(e) => setDate(date)}>
                 <p>{date}</p></button>;
 
             if (date === 64) 
@@ -27,7 +30,7 @@ export const Calendar: React.FC<ChildComponentProps> = (prop) => {
 
             else if(date - 10 < 0) 
                 result = <button className="date" value={date
-            } onClick={handleClick}><p>0{date}</p></button>;
+            } onClick={(e) => setDate(date)}><p>0{date}</p></button>;
 
             return result;
         }
