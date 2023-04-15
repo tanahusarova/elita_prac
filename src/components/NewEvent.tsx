@@ -6,6 +6,10 @@ import MultiValue from "react-select";
 import OptionTypeBase from "react-select";
 import makeAnimated from 'react-select/animated';
 import { getNicknames } from '../api/User';
+import moment from 'moment-timezone';
+import dayjs, { Dayjs } from 'dayjs';
+
+
 
 
 
@@ -13,14 +17,13 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import InputColor from 'react-input-color';
 
-import { DateTimePicker } from '@mui/x-date-pickers';
-import { DatePicker } from '@mui/x-date-pickers';
+import { DateTimePicker, DateTimePickerProps } from '@mui/x-date-pickers';
+//import { DatePicker } from '@mui/x-date-pickers';
 import Plans from "./Plans";
 import LongMenu from "./LongMenu";
 import Event from "./Event";
-import dayjs from 'dayjs';
 import Time from "../configs/Time";
-import { addComment, addEvent, addEventWithParticipants, addObserver, addParticipant, deleteEvent } from "../api/Events";
+import { addComment, addEvent, addEventWithParticipants, addObserver, addParticipant, deleteEvent, updateEvent } from "../api/Events";
 import { response } from "express";
 import SharedInformations from "./SharedInformations";
 import PropsNewEvent from "./props/PropsNewEvent";
@@ -56,30 +59,39 @@ type ChildComponentProps = {
   sharedInformations: SharedInformations;
 };
 
+
+
 export const NewEvent: React.FC<ChildComponentProps> = (props) => {
 
     //nazov, typ, farba, od, do, poznamka, kto ma vidiet, kto sa ucasti
     const [name, setName] = useState('');
     const [type, setType] = useState(3);
-    const [typePrivate, setTypePrivate] = useState(false);
-    const [color, setColor] = useState('#90a822ff'); 
-    const [time_from, setFrom] = useState<Date | null>(null);
-    const [time_to, setTo] = useState<Date | null>(null);
+    const [typePrivate, setTypePrivate] = useState(true);
+    const [color, setColor] = useState('#88c20cff'); 
+    const [time_from, setFrom] = useState<null | Date>(new Date('2023-05-15T22:00:00.000Z'));
+    const [time_to, setTo] = useState<null | Date>(new Date('2023-05-15T22:00:00.000Z'));
     const [comment, setComment] = useState('');
-    const [date, setDate] = useState('');
+    const [date, setDate] = useState('2023-05-15');
     const [selectionOfParticipants, setSelectionOfParticipants] = useState<Participant[]>([]);
     const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>([]);
     const [hiddenFromParticipants, sethiddenPart] = useState<Participant[]>([]);
     const [idOfevent, setIdOfEvent] = useState(31);
     const [newE, setNewE] = useState(true);
+    const [selectedType, setSelectedType] = useState<OptionType | null>(null);
+
 
 
     const animatedComponents = makeAnimated();
+    const timeZone = 'Europe/Bratislava';
+    const timeZoneOffset = moment.tz(timeZone).utcOffset();
 
 
 
    async function handleSubmit () {
-        console.log(time_from);
+    //const {id_of_type, name, from, to, date, colour } = body;
+  //let string = 'UPDATE events SET type_id = ' + id_of_type + ', name = \'' + name + '\', from_time = \''+ from +
+  //'\', to_time = \''+ to +'\', date_time =\''+ date +'\', colour =\'' + colour + '\' WHERE event_id = '+ event_id + ';';
+        console.log(setNewE);
 
         let time_fromString:string = '';
            if (time_from) time_fromString = time_from?.toISOString();
@@ -89,6 +101,12 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
 
         let partArray = new Array<{user_id_p:number}>();
         let obserArray = new Array<{user_id_o:number, visible:boolean}>();
+
+        if (!newE){
+          updateEvent(props.event.event_id, {id_of_type: type, name:name, from:time_fromString, to:time_toString, date:date, colour:color});
+
+        }else{
+  
         partArray.push({user_id_p:props.sharedInformations.idOfLoggedUser});
         obserArray.push({user_id_o:props.sharedInformations.idOfLoggedUser, visible:true});
 
@@ -104,40 +122,31 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
 
 
         addEventWithParticipants({event:{ id_of_type: type, name: name, from: time_fromString, to: time_toString, date: date, colour: color }, participants: partArray, observers:obserArray, comments:{user_id_c:props.sharedInformations.idOfLoggedUser, comment: comment}});
-      
-          
-/*
-      if (comment)
-        addComment({'event_id': id, 'user_id': props.sharedInformations.idOfLoggedUser, 'comment': comment});
-      
-      //const {event_id, user_id} = body;
-
-      for (let i = 0; i < selectedParticipants.length; i++){
-        addParticipant({'event_id': idOfevent, 'user_id':selectedParticipants[i].value});
       }
-
-      for (let i = 0; i < hiddenFromParticipants.length; i++){
-        addObserver({'event_id': idOfevent, 'user_id':hiddenFromParticipants[i].value, 'visible':false});
-      }
-
-      var tmp = selectionOfParticipants.filter((item) => !hiddenFromParticipants.includes(item));
-      for (let i = 0; i < hiddenFromParticipants.length; i++){
-        addObserver({'event_id': idOfevent, 'user_id':tmp[i].value, 'visible':true});
-      }
-      */
-        
     }
 
-    const handleTimeFrom = (date:Date|null) => {
-      setFrom(date);
-      if (date === null) setDate('');
-      else setDate(date.toJSON().slice(0, 10));
+    const handleTimeFrom = (date:Dayjs|null) => {
+      if (date === null) {
+        setFrom(null);
+        setDate('');
+      }
+      else {
+        {
+          const result = new Date(date.toDate());
+          result.setHours(result.getHours() + 24*0);
+          setFrom(result);
+          setDate(result.toJSON().slice(0, 10));
+          console.log(result.toJSON().slice(0, 10));
+        }
+
+      }
+      
     }
 
     
 
     const options: OptionType[] = [
-        { value: 1, label: 'school',  },
+        { value: 1, label: 'school'},
         { value: 2, label: 'hobby' },
         { value: 3, label: 'other plans' },
         { value: 4, label: 'mutual plans' },
@@ -150,6 +159,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
       const handleSelection = (selectedOption: OptionType | null) =>{
         if (selectedOption === null) {
           setTypePrivate(true);
+          setSelectedType(selectedOption);
           return;
         }
 
@@ -163,6 +173,9 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
           setType(selectedOption.value);
 
         }
+
+        setSelectedType(selectedOption);
+
       };
 
 
@@ -172,13 +185,19 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
 
       const handleDelete = () => {
         setName('');
-        setColor('#90a822ff');
+        setColor('#88c20cff');
         setTypePrivate(false);
-        setFrom(null);
-        setDate('');
-        setTo(null);
+        setFrom(new Date('2023-05-15T22:00:00.000Z'));
+        setDate('2023-05-15');
+        setTo(new Date('2023-05-15T22:00:00.000Z'));
         setComment('');
         deleteEvent(idOfevent);
+
+        if (props.event.event_id > 0){
+          deleteEvent(props.event.event_id).catch((err)=>{
+            console.log(err);
+          })
+        }
       };
 
       const setNewOptions = () => {
@@ -199,11 +218,24 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
       }, []);
 
       useEffect(() => {
-        setName(props.event.name);
-        setFrom(new Date(props.event.time_from));
-        setTo(new Date(props.event.time_to));
-        setComment(props.event.comment);
-        setColor(props.event.colour);
+        if (props.event.idOfWathedUser === props.sharedInformations.idOfLoggedUser){
+          setNewE(props.event.new_event);
+          setName(props.event.name);
+          let date_from = props.event.time_from;
+          setFrom(new Date(date_from));
+          setDate(new Date(date_from).toJSON().slice(0, 10));
+          setTypePrivate(true);
+
+
+          for (let i = 0; i < 4; i++){
+            if (options[i].value === props.event.type)
+              setSelectedType({value: props.event.type, label:options[i].label});
+          }
+
+          setTo(new Date(props.event.time_to));
+          setComment(props.event.comment);
+          setColor(props.event.colour);
+        }
       }, [props.event]);
       
 
@@ -217,9 +249,11 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
             <label htmlFor="type"> type </label>
             <Select 
                onChange={handleSelection}
-               options={options} />
+               options={options}
+               value= {selectedType} />
 
             <Select
+             placeholder="choose participants..."
              isDisabled={typePrivate}
              closeMenuOnSelect={true}
              components={animatedComponents}
@@ -231,6 +265,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
             <label htmlFor="hidden"> hidden from </label>
             <Select
              closeMenuOnSelect={true}
+             isDisabled={!newE}
              components={animatedComponents}
              isMulti
              options={selectionOfParticipants.filter(item => !selectedParticipants.includes(item))}
@@ -242,16 +277,24 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
           
             <label htmlFor="time_from">from </label>            
             <DateTimePicker
-            defaultValue={time_from}
-            disablePast
-            onChange={handleTimeFrom}
+            disablePast              
+            value={dayjs(time_from)}
+            onChange={(newValue) => handleTimeFrom(newValue)}
             views={['year', 'month', 'day', 'hours', 'minutes']}
           />
             <label htmlFor="time_to">to </label>            
             <DateTimePicker
-            defaultValue={time_to}
-            disablePast
-            onChange={(newValue)=> setTo(newValue)}
+            value ={dayjs(time_to)}
+            disablePast              
+            onChange={(newValue) => {
+              if (newValue === null)
+                  setTo(new Date());
+              else {
+                const result = new Date(newValue.toDate());
+                result.setHours(result.getHours() + 24*0);
+                setTo(result);
+              }
+            }}
             views={['year', 'month', 'day', 'hours', 'minutes']}
           />
 
@@ -261,7 +304,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
            
             <label htmlFor="color">color</label>
             <InputColor
-             initialValue="#90a822ff"
+             initialValue={color}
              onChange={handleColorChange}
              placement="right"
              />

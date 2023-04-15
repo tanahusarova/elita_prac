@@ -8,25 +8,15 @@ import PropsNewEvent from "../components/props/PropsNewEvent";
 
 
 export const CalendarPage = (id:PropsIdUser) => {
-    let inf = SharedInformations.getInstance();
-    inf.date = '2008-11-11';
-    inf.idOfLoggedUser = id.id;
-    const [informations, setInf] = useState(inf);
-    const [propsNewEvent, setPropsNewEvent] = useState(new PropsNewEvent('', '', '', '', '0x8ba613'));
+
+    const [informations, setInf] = useState(new SharedInformations('2023-05-14', id.id));
+    const [propsNewEvent, setPropsNewEvent] = useState(new PropsNewEvent(-1, '', '2023-05-14T22:00:00.000Z', '2023-05-14T22:00:00.000Z', '', '#88c20cff', id.id, 1, true));
 
 
     function handleDateChoice(d:string) {
-        let tmp = informations;
-        tmp.date = d;
-        setInf(tmp);
-        console.log(informations.date);
+        setInf(new SharedInformations(d, informations.idOfLoggedUser));
+        console.log(informations.date + '... calendar page');
 
-      }
-
-      function handlePropsChange(name: string, time_from: string,time_to: string,
-        comment: string, colour:string) {
-        
-        setPropsNewEvent(new PropsNewEvent(name, time_from, time_to, comment, colour));
       }
 
       function handleEventChoice(event:PropsNewEvent) {
@@ -34,13 +24,18 @@ export const CalendarPage = (id:PropsIdUser) => {
       }
 
       useEffect(() => {
-      }, [propsNewEvent]);
+      }, []);
+
+      useEffect(() => {
+        
+      }, [informations.date]);
+
 
     //do new event sa musi dostat natiahnuty event z plans, z toho na ktore sa kliklo
     return (
         <div className="calendar-page">
             <div className='background-container'>
-            <Calendar handleDateChoice={handleDateChoice}/> 
+            <Calendar handleDateChoice={handleDateChoice} idOfLogedUser={informations.idOfLoggedUser}/> 
             </div>
             <Plans handleEventChoice={handleEventChoice} sharedInformations={informations}/>
             <NewEvent event={propsNewEvent} sharedInformations={informations}/>

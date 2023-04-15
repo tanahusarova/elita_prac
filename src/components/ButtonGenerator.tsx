@@ -20,6 +20,7 @@ export const ButtonGenerator: React.FC<ChildComponentProps> = (prop) => {
     //doplnit fetchovanie z databazy a generovanie eventbuttonikov
     //id mam od loginu, datum zo stlacenia butoniku, a id of user z vyberu v plans
     const [eventsByDate, setEventsByDate] = useState<EventInf[]>([]);
+    const [loaded, setLoaded] = useState(true);
     const [text, setText] = useState('');
     const [buttons, setButtons] = useState<string[]>([""]);
 
@@ -30,56 +31,70 @@ export const ButtonGenerator: React.FC<ChildComponentProps> = (prop) => {
 
 
 
-  function loadEvents() {
-    const newEvents = new Array<EventInf>();
-
-    getEventByDate(prop.forButtonGenerator.idOfLogedUser, prop.forButtonGenerator.idOfUserWithPlans, prop.forButtonGenerator.date).then((eventsByDate)=>{
-        eventsByDate.forEach(function (value:EventInf) {
-             if (value.visible) {
-                 newEvents.push(new EventInfFromQuery(value.event_id, value.type_id, value.name, 
-                 value.from_time, value.to_time, value.date_time, value.colour, value.user_id, value.visible));
-            } else {
-                newEvents.push(new EventInfFromQuery(-1, value.type_id, 'OCUPIED', 
-                value.from_time, value.to_time, value.date_time, '#abababff', value.user_id, value.visible));
+    async function loadEvents() {
+      setLoaded(false);
+      const eventsByDate = await getEventByDate(
+        prop.forButtonGenerator.idOfLogedUser,
+        prop.forButtonGenerator.idOfUserWithPlans,
+        prop.forButtonGenerator.date
+      );
+    
+      const newEvents = eventsByDate.map((value:EventInf) => {
+        if (value.visible) {
+          return new EventInfFromQuery(
+            value.event_id,
+            value.type_id,
+            value.name,
+            value.from_time,
+            value.to_time,
+            value.date_time,
+            value.colour,
+            value.user_id,
+            value.visible
+          );
+        } else {
+          return new EventInfFromQuery(
+            -1,
+            value.type_id,
+            "OCUPIED",
+            value.from_time,
+            value.to_time,
+            value.date_time,
+            "#abababff",
+            value.user_id,
+            value.visible
+          );
         }
-     });});
+      });
+    
+      setEventsByDate(newEvents);
+      setLoaded(true);
+    }
+    
 
-    setEventsByDate(newEvents);
-}
 
       
       useEffect(() => {
+        console.log('nacitavaju sa nove eventy');
         loadEvents();
-
-      }, [prop.forButtonGenerator.idOfUserWithPlans, prop.forButtonGenerator.date]);
+      }, [prop.forButtonGenerator.date, prop.forButtonGenerator.idOfLogedUser, prop.forButtonGenerator.idOfUserWithPlans]);
       
 
-      const handleClick1 = () =>{
-        if(eventsByDate.length > 0)
-                     setText('tralalala');
-
-      }
-
-      const handleClick2 = () =>{
-        if(eventsByDate.length > 0)
-                     setText('hihihihi');
-
-      }
-    
     return(
     <div>
          <div className="weekdays-container">
             <label>{text}</label>
-            <button onClick={addNewButton}>Load events</button>
 
             </div>
-
             <div className="event-buttons">
-             {eventsByDate.map((value:EventInf) => (
-
-                <ButtonEvent handleEventChoice={prop.handleEventChoice} event={value} />
-               
-             ))}
+               {(loaded && eventsByDate.length > 0) ? (
+               eventsByDate.map((value:EventInf) => (
+               <ButtonEvent handleEventChoice={prop.handleEventChoice} event={value} 
+               watchedUser={prop.forButtonGenerator.idOfUserWithPlans} logedUser={prop.forButtonGenerator.idOfLogedUser}/>
+               ))
+                ) : (loaded && eventsByDate.length === 0) ? (<div className="no-plans">No plans available</div>) : (
+        <div>Loading...</div>
+      )}
           </div>
 
             <div className="reload-button">

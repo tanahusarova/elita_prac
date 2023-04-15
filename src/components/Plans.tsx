@@ -22,8 +22,9 @@ export const Plans: React.FC<ChildComponentProps> = (prop) => {
   const dateInputRef = useRef(null);
   const [propString, setPropString] = useState(new PropsString([], "PLANS"));
   const loginUser = prop.sharedInformations.idOfLoggedUser; 
-  const [watchedUser, setWatchedUser] = useState(8); //prepisat na prihlaseneho
+  const [watchedUser, setWatchedUser] = useState(prop.sharedInformations.idOfLoggedUser); //prepisat na prihlaseneho
   const [watchedUserName, setWatchedUserName] = useState('Mine');
+  const [propsGenerator, setPropGenerator] = useState(new PropsButtonGenerator(loginUser, loginUser, '2023-05-01'));
 
   //erarne sa mu vykresluju jeho plany
 
@@ -33,7 +34,7 @@ export const Plans: React.FC<ChildComponentProps> = (prop) => {
 const setNewPropString = () => {
   
   let nicknamesArray = new Array<Pair>();
-  nicknamesArray.push({label:'MINE', value:loginUser});
+  nicknamesArray.push({label:'Mine', value:loginUser});
   
   getNicknames().then((nicknames)=>{
     nicknames.forEach(function (nick:any) {
@@ -47,11 +48,24 @@ const setNewPropString = () => {
 useEffect(() => {
   let nicknames = setNewPropString();
   setPropString(nicknames);
+  setPropGenerator(new PropsButtonGenerator(prop.sharedInformations.idOfLoggedUser, watchedUser, prop.sharedInformations.date));
+
 }, []);
 
 useEffect(() => {
+  console.log('pouziva sa useEffect plans wathedUser');
   console.log(watchedUser);
+  setPropGenerator(new PropsButtonGenerator(prop.sharedInformations.idOfLoggedUser, watchedUser, prop.sharedInformations.date));
 }, [watchedUser]);
+
+
+useEffect(() => {
+  console.log('pouziva sa useEffect plans prop');
+  console.log(prop.sharedInformations.date);
+  console.log(prop.sharedInformations.idOfLoggedUser);
+  setPropGenerator(new PropsButtonGenerator(prop.sharedInformations.idOfLoggedUser, watchedUser, prop.sharedInformations.date));
+  }, [prop.sharedInformations.date, prop.sharedInformations.idOfLoggedUser]);
+
 
 function handleIdChoice(id:number, name:string) {
   setWatchedUser(id);
@@ -66,7 +80,7 @@ function handleIdChoice(id:number, name:string) {
  <div className='plans-container'>
     <label>{watchedUserName}</label>
         <LongMenu forMenu={propString} handleIdChoice={handleIdChoice} />
-        <ButtonGenerator handleEventChoice={prop.handleEventChoice} forButtonGenerator={new PropsButtonGenerator(prop.sharedInformations.idOfLoggedUser, watchedUser, prop.sharedInformations.date)} />
+        <ButtonGenerator handleEventChoice={prop.handleEventChoice} forButtonGenerator={propsGenerator} />
     </div>
     );
 };

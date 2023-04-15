@@ -3,22 +3,13 @@ import React from "react";
 class SharedInformations{
     date: string = '';
     idOfLoggedUser:number = -1;
-    private static instance: SharedInformations;
 
-    private constructor() {
-          // Initialize the instance of the class here
+    public constructor(date:string, idOfLogedUser:number) {
+        this.date = date;
+        this.idOfLoggedUser = idOfLogedUser;
     }
       
-    public static getInstance(): SharedInformations {
-        if (!SharedInformations.instance) {
-        SharedInformations.instance = new SharedInformations();
-        }
-      
-        return SharedInformations.instance;
-    }
-      
-        // Other methods and properties of the class here
-    
+          
       
     
 }
