@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, ReactNode} from "react";
 import { Weekdays } from "../configs/Weekdays";
 import { monthDates } from "../configs/MonthDays";
 import PropsButtonEvent from "./props/PropsButtonEvent";
@@ -25,6 +25,17 @@ type ChildComponentProps = {
     logedUser:number;
   };
 
+
+  interface WrapperProps {
+    children: ReactNode;
+  }
+  
+  const WrapperComponent: React.FC<WrapperProps> = ({ children }) => (
+    <div className="wrapper">
+      {children}
+    </div>
+  );
+
 export const ButtonEvent: React.FC<ChildComponentProps> = (prop) => {
     const buttonStyle = {
         color: prop.event.colour,
@@ -40,9 +51,19 @@ export const ButtonEvent: React.FC<ChildComponentProps> = (prop) => {
     useEffect(() => {
         let date_from:Date = new Date(prop.event.from_time);
         let date_to:Date = new Date(prop.event.to_time);
+        let strHoursFrom = '' + date_from.getHours();
+        let strHoursTo = '' + date_to.getHours();
+        let strMinutesFrom = '' + date_from.getMinutes();
+        let strMinutesTo = '' + date_to.getMinutes();
 
-        let string = '\n FROM: ' + (date_from.getDate()) + '.' + date_from.getMonth() + '. at ' + date_from.getHours() + ':' + date_from.getMinutes() + 
-        '           TO: ' + (date_from.getDate()) + '.' + date_from.getMonth() + '. at ' + date_to.getHours() + ':' + date_to.getMinutes();
+        if (date_from.getHours() < 10) strHoursFrom = '0' + strHoursFrom;
+        if (date_to.getHours() < 10) strHoursTo = '0' + strHoursTo;
+        if (date_from.getMinutes() < 10) strMinutesFrom = '0' + strMinutesFrom;
+        if (date_to.getMinutes() < 10) strMinutesTo = '0' + strMinutesTo;
+
+
+        let string = '\n FROM: ' + (date_from.getDate()) + '.' + date_from.getMonth() + '. at ' + strHoursFrom + ':' + strMinutesFrom + 
+        '           TO: ' + (date_from.getDate()) + '.' + date_from.getMonth() + '. at ' + strHoursTo + ':' + strMinutesTo;
 
         setText(string);
         if(prop.event.event_id < 0) setComment('');
@@ -119,18 +140,19 @@ export const ButtonEvent: React.FC<ChildComponentProps> = (prop) => {
 
 
     return(
-        <div>
+        <WrapperComponent>
+             <button style={buttonStyle} onClick={handleClick} disabled={prop.watchedUser !== prop.logedUser}> 
+            {text} 
+        </button>
         <label style={{
       color: prop.event.colour,
       fontWeight: 'bold',
       border: 'none',
     }}>{prop.event.name}</label>
-        <button style={buttonStyle} onClick={handleClick} disabled={prop.watchedUser !== prop.logedUser}> 
-            {text} 
-        </button>
+       
         <button onClick={findComments}>{comment}</button>
 
-    </div>
+    </WrapperComponent>
     )
 
 }

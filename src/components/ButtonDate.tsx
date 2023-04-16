@@ -1,15 +1,17 @@
-import React, { useState, useRef, forwardRef, useImperativeHandle, MutableRefObject } from "react";
+import React, { useState, useRef, useEffect, useImperativeHandle, MutableRefObject } from "react";
+import { getEventByDate } from "../api/Events";
 
 export class ChildComponentPropsButtonDate {
   date: number;
   date_str: string;
   urSend: (ref: MutableRefObject<ButtonDateRef | null>, datep:number) => void;
+  idOfLoggedUser: number;
 
-
-    public constructor (date:number, date_str:string, urSend: (ref: MutableRefObject<ButtonDateRef | null>, datep:number) => void){
+    public constructor (date:number, date_str:string, urSend: (ref: MutableRefObject<ButtonDateRef | null>, datep:number) => void, idOfLoggedUser:number){
         this.date = date;
         this.date_str = date_str;
         this.urSend = urSend;
+        this.idOfLoggedUser = idOfLoggedUser;
 
 
     }
@@ -56,6 +58,8 @@ export const ButtonDate: React.FC<ChildComponentPropsButtonDate> = (prop) => {
   useImperativeHandle(useREfB, () => ({
     changeFont, changeBack
   }));
+
+ 
 
   return (
     <button

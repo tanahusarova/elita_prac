@@ -1,6 +1,5 @@
 
 
-
 .front-pages {
   text-align: center;
   display: flex;
@@ -45,6 +44,8 @@ button{
   cursor: pointer;
   color: #435b03;
   font-family: "Century Gothic", serif;
+  letter-spacing: inherit;
+
 
 }
 
@@ -200,6 +201,8 @@ h4{
   color: #435b03;
   font-size: 30px;	
   text-align: left;
+  letter-spacing: 8px;
+
 
 }
 
@@ -229,11 +232,14 @@ h4{
   display: inline-block;
   width: 120px;
   text-align: left;
-  color: #8ba613;
+  color: #435b03;
   font-size: 20px;	
   padding-top: 0.5rem;
   padding-bottom: 0.2rem;
   font-family: "Century Gothic", serif;
+  letter-spacing: 5px;
+  width: 200px;
+
 
 
 }
@@ -272,4 +278,19 @@ h4{
   font-size: 20px;
   font-family: "Century Gothic", serif;
   color: rgb(150, 180, 98);
+  width: 200px;
+}
+
+.wrapper{
+  padding: 10px;
+  width: 260px;
+}
+
+.plans-label{
+  padding: 10px;
+  width: 260px;
+  display: inline-flex;
+  letter-spacing: 5px;
+  margin-top: 10px;
+
 }

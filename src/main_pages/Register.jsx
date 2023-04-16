@@ -4,6 +4,7 @@ import { addUser, checkUser } from "../api/User";
 
 
 
+
 export const Register = (props) => {
     const userRef = useRef();
     const errRef = useRef();
@@ -32,31 +33,15 @@ export const Register = (props) => {
     let navigate = useNavigate(); 
 
     const handleSubmit = async (e) => {
-        let path = `/calendar`; 
-        navigate(path);
 
-        checkUser(email).then((res) => {
-            console.log(res.length);
+        console.log('som tu');
+        const res = await addUser({nickname:name, mail:email, password:pass});
 
-            if (res.length > 0)
-                setErrMsg('ALREADY USED MAIL');
-                
-            else {
-                addUser({nickname:name, mail:email, password:pass}).then(
-                    (event) => {
-                        setErrMsg('Successfully added');
-                        let path = `/calendar`; 
-                        navigate(path);
-                    }
-                ).catch((error)=>console.log(error))
-            };
-        })
         
-          
     }
 
     const goToLoginPage = async(e) =>{
-        let path = `/`; //SPYTAT SA NA TUTO CAST
+        let path = `/login`; //SPYTAT SA NA TUTO CAST
         navigate(path);
     }
 

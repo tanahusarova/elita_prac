@@ -69,14 +69,14 @@ export const Calendar: React.FC<ChildComponentProps> = (prop) => {
 
             if(date - 10 < 0) {
                 let str = '0' + date;
-                let prop:ChildComponentPropsButtonDate = new ChildComponentPropsButtonDate(date, str, onButtonClick);
-                let result = <ButtonDate {...prop} />;
+                let propForButton:ChildComponentPropsButtonDate = new ChildComponentPropsButtonDate(date, str, onButtonClick, prop.idOfLogedUser);
+                let result = <ButtonDate {...propForButton} />;
                 return result;
             }
 
             let str = '' + date;
-            let prop:ChildComponentPropsButtonDate = new ChildComponentPropsButtonDate(date, str, onButtonClick);
-            let result = <ButtonDate {...prop} />;
+            let propForButton:ChildComponentPropsButtonDate = new ChildComponentPropsButtonDate(date, str, onButtonClick, prop.idOfLogedUser);
+            let result = <ButtonDate {...propForButton} />;
             return result;
 
         }

@@ -34,7 +34,7 @@ function App() {
     <div className="App">
       {
         <Routes>
-        <Route path="/" element={isAuthenticated ? <CalendarPage {...idOfLoggedUser}/> : <Login />} />
+        <Route path="/login" element={isAuthenticated ? <CalendarPage {...idOfLoggedUser}/> : <Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/calendar" element={<CalendarPage {...idOfLoggedUser}/>} />
 

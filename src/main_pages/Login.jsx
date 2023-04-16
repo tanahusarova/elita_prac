@@ -1,5 +1,6 @@
 import {useState, useRef, useEffect, useContext} from "react"
 import { useNavigate } from "react-router-dom";
+import { checkUser, loginUser } from "../api/User";
 
 
 export const Login = () => {
@@ -13,10 +14,18 @@ export const Login = () => {
     let navigate = useNavigate(); 
 
     const handleSubmit = async (e) => {
-    //pridat kontrolu uzivatela
-      let path = `/calendar`; //SPYTAT SA NA TUTO CAST
-      navigate(path);
-    }
+        e.preventDefault();
+
+        try {
+            const token = await loginUser({email:email, password: pass});
+            localStorage.setItem("token", token);
+            navigate("/calendar");
+          } catch (err) {
+            setErrMsg(err.message);
+          }
+        };
+
+    
 
     const goToRegisterPage = async(e) =>{
         let path = `/register`; //SPYTAT SA NA TUTO CAST

@@ -78,8 +78,10 @@ function handleIdChoice(id:number, name:string) {
 //pridat callback function do button generator
  return (
  <div className='plans-container'>
+  <div className='plans-label'>
     <label>{watchedUserName}</label>
         <LongMenu forMenu={propString} handleIdChoice={handleIdChoice} />
+      </div>
         <ButtonGenerator handleEventChoice={prop.handleEventChoice} forButtonGenerator={propsGenerator} />
     </div>
     );

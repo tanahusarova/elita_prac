@@ -1,5 +1,16 @@
 function addUser(user) {
-    return fetch("http://localhost:3001/users/user", {
+    return fetch("http://localhost:3001/users/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user)
+    });
+}
+
+
+function loginUser(user) {
+    return fetch("http://localhost:3001/users/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -47,4 +58,4 @@ async function deleteEvent(body) {
 
 
 
-export {getNicknames, addUser, checkUser};
+export {getNicknames, addUser, checkUser, loginUser};
