@@ -1,0 +1,22 @@
+Tatiana Husarova
+elita
+
+frontend:https://github.com/tanahusarova/elita_prac/tree/master
+backend:https://github.com/tanahusarova/elita_server
+verejna instancia projektu: doplnim spolu s postupom
+
+
+implementovane: 
+prihlasovanie, login
+zapisovanie vlastnych eventov,
+vyber pouzivatela ktoreho eventy sa maju zobrazovat,
+editovanie existujucich eventov (a komentarov)
+vykreslovanie jednotlivych eventov a zaznacovanie dni s eventami
+
+dalsie plany:
+doriesit casovu synchronizaciu databazy s frontendom a serverom
+(pisane 18.4) zavesit stranku na server, rozbehat databazu na serveri
+doplnit pouzitie ajaxu, doplnit licenciu
+
+problemy:
+zavesenie projektu na server, casovy odhad jednotlivych casti implementacie
