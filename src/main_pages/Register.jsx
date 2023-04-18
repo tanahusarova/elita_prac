@@ -14,21 +14,6 @@ export const Register = (props) => {
     const [name, setName] = useState('');
     const [errMsg, setErrMsg] = useState();
 
-    useEffect(() => {
-        console.log(name);
-        setName(name);
-    }, [name])
-
-    useEffect(() => {
-        console.log(email);
-        setEmail(email);
-
-    }, [email])
-
-    useEffect(() => {
-        console.log(pass);
-        setPass(pass);
-    }, [pass])
 
     let navigate = useNavigate(); 
 
@@ -36,8 +21,17 @@ export const Register = (props) => {
 
     const handleSubmit = async (e) => {
  
-   //   console.log('som tu');
-   //   const res = await addUser({nickname:name, mail:email, password:pass});
+      console.log('som tu');
+      addUser({nickname:name, mail:email, password:pass}).then((res) => res.json()).then((res) => {
+        console.log(res)
+        if (res.token) {
+            localStorage.setItem("token", res.token);
+            navigate("/calendar");
+
+    }}).catch((err) => {
+    setErrMsg('Already used mail');
+  });
+
             
     }
 
