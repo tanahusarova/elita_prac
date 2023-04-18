@@ -9,7 +9,7 @@ import PropsIdUser from './components/props/PropsIdUser';
 
 function App() {
   const [currentForm, setCurrentForm] = useState('login');
-  const [idOfLoggedUser, setIdOfUser] = useState(new PropsIdUser(5));
+  const [idOfLoggedUser, setIdOfUser] = useState(new PropsIdUser(16));
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
 
@@ -27,7 +27,7 @@ function App() {
       setIsAuthenticated(true);
     }
   }, []);
-
+ 
 
   return (
     <BrowserRouter>

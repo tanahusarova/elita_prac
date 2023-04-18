@@ -6,12 +6,8 @@ import MultiValue from "react-select";
 import OptionTypeBase from "react-select";
 import makeAnimated from 'react-select/animated';
 import { getNicknames } from '../api/User';
-import moment from 'moment-timezone';
 import dayjs, { Dayjs } from 'dayjs';
-
-
-
-
+import * as moment from 'moment-timezone';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -59,6 +55,7 @@ type ChildComponentProps = {
   sharedInformations: SharedInformations;
 };
 
+moment.tz.setDefault('UTC');
 
 
 export const NewEvent: React.FC<ChildComponentProps> = (props) => {
@@ -82,8 +79,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
 
 
     const animatedComponents = makeAnimated();
-    const timeZone = 'Europe/Bratislava';
-    const timeZoneOffset = moment.tz(timeZone).utcOffset();
+
 
 
 
@@ -94,16 +90,19 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
         console.log(setNewE);
 
         let time_fromString:string = '';
-           if (time_from) time_fromString = time_from?.toISOString();
+        if (time_from) 
+            time_fromString = time_from?.toISOString();
 
         let time_toString:string = '';
-           if (time_to) time_toString = time_to?.toISOString();
+        if (time_to) 
+            time_toString = time_to?.toISOString();
 
         let partArray = new Array<{user_id_p:number}>();
         let obserArray = new Array<{user_id_o:number, visible:boolean}>();
 
         if (!newE){
-          updateEvent(props.event.event_id, {id_of_type: type, name:name, from:time_fromString, to:time_toString, date:date, colour:color});
+          updateEvent(props.event.event_id, {id_of_type: type, name:name, from:time_fromString, to:time_toString, 
+                      date:date, colour:color, comment:comment, user_id:props.sharedInformations.idOfLoggedUser});
 
         }else{
   
@@ -121,7 +120,9 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
         } 
 
 
-        addEventWithParticipants({event:{ id_of_type: type, name: name, from: time_fromString, to: time_toString, date: date, colour: color }, participants: partArray, observers:obserArray, comments:{user_id_c:props.sharedInformations.idOfLoggedUser, comment: comment}});
+        addEventWithParticipants({event:{ id_of_type: type, name: name, from: time_fromString, to: time_toString,
+                                  date: date, colour: color }, participants: partArray, observers:obserArray,
+                                  comments:{user_id_c:props.sharedInformations.idOfLoggedUser, comment: comment}});
       }
     }
 
@@ -132,8 +133,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
       }
       else {
         {
-          const result = new Date(date.toDate());
-          result.setHours(result.getHours() + 24*0);
+          const result = new Date(Date.UTC(date.toDate().getFullYear() , date.toDate().getMonth(), date.toDate().getDate(), date.toDate().getHours(), date.toDate().getMinutes(), date.toDate().getSeconds()));
           setFrom(result);
           setDate(result.toJSON().slice(0, 10));
           console.log(result.toJSON().slice(0, 10));
@@ -221,9 +221,9 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
         if (props.event.idOfWathedUser === props.sharedInformations.idOfLoggedUser){
           setNewE(props.event.new_event);
           setName(props.event.name);
-          let date_from = props.event.time_from;
-          setFrom(new Date(date_from));
-          setDate(new Date(date_from).toJSON().slice(0, 10));
+          let date = new Date(props.event.time_from);
+          setFrom(new Date(Date.UTC(date.getFullYear() , date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds())));
+          setDate(new Date(Date.UTC(date.getFullYear() , date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds())).toJSON().slice(0, 10));
           setTypePrivate(true);
 
 
@@ -232,7 +232,8 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
               setSelectedType({value: props.event.type, label:options[i].label});
           }
 
-          setTo(new Date(props.event.time_to));
+          date = new Date(props.event.time_to);
+          setTo(new Date(Date.UTC(date.getFullYear() , date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds())));
           setComment(props.event.comment);
           setColor(props.event.colour);
         }
@@ -290,8 +291,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
               if (newValue === null)
                   setTo(new Date());
               else {
-                const result = new Date(newValue.toDate());
-                result.setHours(result.getHours() + 24*0);
+                const result = new Date(Date.UTC(newValue.toDate().getFullYear() , newValue.toDate().getMonth(), newValue.toDate().getDate(), newValue.toDate().getHours(), newValue.toDate().getMinutes(), newValue.toDate().getSeconds()));
                 setTo(result);
               }
             }}

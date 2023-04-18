@@ -16,14 +16,17 @@ export const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        try {
-            const token = await loginUser({email:email, password: pass});
-            localStorage.setItem("token", token);
-            navigate("/calendar");
-          } catch (err) {
-            setErrMsg(err.message);
-          }
-        };
+        loginUser({email:email, password: pass}).then((res) => res.json()).then((res) => {
+                console.log(res)
+                if (res.token) {
+                    localStorage.setItem("token", res.token);
+                    navigate("/calendar");
+
+            }}).catch((err) => {
+            setErrMsg('Wrong mail or password');
+          });
+          
+        }
 
     
 

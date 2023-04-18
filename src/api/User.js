@@ -1,5 +1,5 @@
 function addUser(user) {
-    return fetch("http://localhost:3001/users/register", {
+    return fetch("/users/register", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -10,7 +10,7 @@ function addUser(user) {
 
 
 function loginUser(user) {
-    return fetch("http://localhost:3001/users/login", {
+    return fetch("/users/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -20,7 +20,7 @@ function loginUser(user) {
 }
 
 async function checkUser(mail) {
-    return fetch(`http://localhost:3001/users/user/${mail}`).then(
+    return fetch(`/users/user/${mail}`).then(
         (response) => {
             if (!response.ok) {
                 throw new Error("Error getting user");
@@ -34,9 +34,16 @@ async function checkUser(mail) {
         });
 }
 
+const getToken = () =>{
+    return localStorage.getItem('token');
+}
 
 async function getNicknames() {
-    return fetch("http://localhost:3001/users/nicknames").then(
+    return fetch("/users/nicknames", {
+        headers: {
+          Accept: 'application/json',
+          Authentication: `Bearer ${getToken()}`,
+        }}).then(
         (response) => {
             if (!response.ok) {
                 throw new Error("Error getting event");

@@ -1,13 +1,14 @@
-const MESSAGES_STORAGE_KEY="messages";
-
-let storage = localStorage;
-
+const getToken = () =>{
+    return localStorage.getItem('token');
+}
 
 async function addEvent(event) {
-    let response = await fetch("http://localhost:3001/events/event", {
+    let response = await fetch("/events/event", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Accept: 'application/json',
+            Authentication: `Bearer ${getToken()}`,
         },
         body: JSON.stringify(event)
     })
@@ -22,10 +23,12 @@ async function addEvent(event) {
 }
 
 async function addEventWithParticipants(event) {
-    let response = await fetch("http://localhost:3001/events/eventpar", {
+    let response = await fetch("/events/eventpar", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Accept: 'application/json',
+            Authentication: `Bearer ${getToken()}`,
         },
         body: JSON.stringify(event)
     })
@@ -42,7 +45,11 @@ async function addEventWithParticipants(event) {
 
 
 async function getEvent(id) {
-    return fetch(`http://localhost:3001/events/event/${id}`)
+    return fetch(`/events/event/${id}`, {
+        headers: {
+          Accept: 'application/json',
+          Authentication: `Bearer ${getToken()}`,
+        }})
     .then(
         (response) => {
             if (!response.ok) {
@@ -59,7 +66,30 @@ async function getEvent(id) {
 }
 
 async function getEventByDate(id_of_user, id_of_owner, date) {
-    return fetch(`http://localhost:3001/events/event-date?param1=${id_of_user}&param2=${id_of_owner}&param3=${date}`).then(
+    return fetch(`/events/event-date?param1=${id_of_user}&param2=${id_of_owner}&param3=${date}`, {
+        headers: {
+          Accept: 'application/json',
+          Authentication: `Bearer ${getToken()}`,
+        }}).then(
+        (response) => {
+            if (!response.ok) {
+                throw new Error("Error getting event");
+            }
+            return response.json();
+        }).catch((error) => {
+            // Better way would be to throw error here and let the client handle (e.g. show error message)
+            // Returning empty array for simplicity only!
+            console.log("Error getting event");
+            return [];
+        });
+}
+
+async function getEventForCalendar(id_of_user) {
+    return fetch(`/events/calendar/${id_of_user}`, {
+        headers: {
+          Accept: 'application/json',
+          Authentication: `Bearer ${getToken()}`,
+        }}).then(
         (response) => {
             if (!response.ok) {
                 throw new Error("Error getting event");
@@ -74,10 +104,12 @@ async function getEventByDate(id_of_user, id_of_owner, date) {
 }
 
 async function updateEvent(id_event, body) {
-    return fetch(`http://localhost:3001/events/update/${id_event}`, {
+    return fetch(`/events/update/${id_event}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
+            Accept: 'application/json',
+            Authentication: `Bearer ${getToken()}`,
         },
         body: JSON.stringify(body)
     })
@@ -92,10 +124,12 @@ async function updateEvent(id_event, body) {
 
 //upravit na vymazanie, spytat sa
 async function deleteEvent(id) {
-    fetch(`http://localhost:3001/events/event/${id}`, {
+    fetch(`/events/event/${id}`, {
         method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          Authentication: `Bearer ${getToken()}`,
         },
       })
       .then(response => {
@@ -116,27 +150,35 @@ async function deleteEvent(id) {
 
 
 function addParticipant(body) {
-    return fetch("http://localhost:3001/events/participant", {
+    return fetch("/events/participant", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Accept: 'application/json',
+            Authentication: `Bearer ${getToken()}`,
         },
         body: JSON.stringify(body)
     });
 }
 
 function addObserver(event) {
-    return fetch("http://localhost:3001/events/observer", {
+    return fetch("/events/observer", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Accept: 'application/json',
+            Authentication: `Bearer ${getToken()}`,
         },
         body: JSON.stringify(event)
     });
 }
 
 async function getComment(id) {
-    return fetch(`http://localhost:3001/events/comments/${id}`).then(
+    return fetch(`/events/comments/${id}`, {
+        headers: {
+          Accept: 'application/json',
+          Authentication: `Bearer ${getToken()}`,
+        }}).then(
         (response) => {
             if (!response.ok) {
                 throw new Error("tato chyba");
@@ -151,14 +193,16 @@ async function getComment(id) {
 }
 
 function addComment(comment) {
-    return fetch("http://localhost:3001/events/comments", {
+    return fetch("/events/comments", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Accept: 'application/json',
+            Authentication: `Bearer ${getToken()}`,
         },
         body: JSON.stringify(comment)
     });
 }
 
 export {addEvent, getEvent, getEventByDate, addObserver, updateEvent,
-        addParticipant, deleteEvent, getComment, addComment, addEventWithParticipants};
+        addParticipant, deleteEvent, getComment, addComment, addEventWithParticipants, getEventForCalendar};

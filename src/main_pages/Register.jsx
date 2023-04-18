@@ -12,7 +12,7 @@ export const Register = (props) => {
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
     const [name, setName] = useState('');
-    const [errMsg, setErrMsg] = useState('');
+    const [errMsg, setErrMsg] = useState();
 
     useEffect(() => {
         console.log(name);
@@ -32,12 +32,13 @@ export const Register = (props) => {
 
     let navigate = useNavigate(); 
 
+
+
     const handleSubmit = async (e) => {
-
-        console.log('som tu');
-        const res = await addUser({nickname:name, mail:email, password:pass});
-
-        
+ 
+   //   console.log('som tu');
+   //   const res = await addUser({nickname:name, mail:email, password:pass});
+            
     }
 
     const goToLoginPage = async(e) =>{

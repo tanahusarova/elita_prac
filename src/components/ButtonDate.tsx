@@ -6,13 +6,14 @@ export class ChildComponentPropsButtonDate {
   date_str: string;
   urSend: (ref: MutableRefObject<ButtonDateRef | null>, datep:number) => void;
   idOfLoggedUser: number;
+  color_back: string;
 
-    public constructor (date:number, date_str:string, urSend: (ref: MutableRefObject<ButtonDateRef | null>, datep:number) => void, idOfLoggedUser:number){
+    public constructor (date:number, date_str:string, urSend: (ref: MutableRefObject<ButtonDateRef | null>, datep:number) => void, idOfLoggedUser:number, color:string){
         this.date = date;
         this.date_str = date_str;
         this.urSend = urSend;
         this.idOfLoggedUser = idOfLoggedUser;
-
+        this.color_back = color;
 
     }
 }
@@ -26,7 +27,7 @@ export interface ButtonDateRef {
 export const ButtonDate: React.FC<ChildComponentPropsButtonDate> = (prop) => {
     const [color, setColor] = useState("#3f5c06ff");
     const [size, setSize] = useState(300);
-    const [back, setBack] = useState('white');
+    const [back, setBack] = useState(prop.color_back);
 
     const useREfB = useRef<ButtonDateRef>(null);
 
@@ -38,15 +39,22 @@ export const ButtonDate: React.FC<ChildComponentPropsButtonDate> = (prop) => {
 
   };
 
+  useEffect(() => {
+    setBack(prop.color_back);
+  }, [prop.color_back]);
+
+
   const changeFont = (state:string): void => {
     if (state === 'clicked'){
-        setColor('#11995eff');
+        setColor('white');
+        setBack('#c0d47bff')
         setSize(800);
     }
 
     else {
         setColor('#3f5c06ff');
         setSize(300);
+        setBack(prop.color_back)
     }
   };
 

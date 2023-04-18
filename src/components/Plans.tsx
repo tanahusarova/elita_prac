@@ -82,7 +82,9 @@ function handleIdChoice(id:number, name:string) {
     <label>{watchedUserName}</label>
         <LongMenu forMenu={propString} handleIdChoice={handleIdChoice} />
       </div>
+      <div className='plans-events'>
         <ButtonGenerator handleEventChoice={prop.handleEventChoice} forButtonGenerator={propsGenerator} />
+        </div>
     </div>
     );
 };

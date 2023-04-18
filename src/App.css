@@ -1,5 +1,4 @@
 
-
 .front-pages {
   text-align: center;
   display: flex;
@@ -67,6 +66,7 @@ napis{
   color: white;
   font-size: 85px;	
   font-family: "Century Gothic", serif;
+  letter-spacing: 8px;
 }
 
 .background-container{
@@ -140,11 +140,13 @@ datepicker-container{
 }
 
 .datepicker-container span{
-  font-size: 25px;
+  font-size: 30px;
   color: whitesmoke;
-  margin: 30px;
+  display: block;
+  text-align: center;
   font-family: "Century Gothic", serif;
-
+  letter-spacing: 8px;
+  margin-bottom: 5px;
 
 }
 
@@ -160,12 +162,19 @@ datepicker-container{
   background-color: white;
   border-radius: 100px;
   font-size: 15px;
+  width: 45px;
+  height: 45px;
+  margin: 5px;
+
 
 }
 
 .date-fake{
   align-items: stretch;
   background-color: white;
+  width: 40px;
+  height: 40px;
+  margin: 5px;
 
 }
 
@@ -191,7 +200,8 @@ h4{
   width: 10rem;
   flex-direction: column;
   margin-right: 400px;
-  margin-top: 41px;
+  margin-top: 60px;
+  margin-left: 80px;
 }
 
 
@@ -213,7 +223,7 @@ h4{
   height: 100%;
   margin: auto;
   position: relative;
-  margin-top: 35px;
+  margin-top: 45px;
   margin-left: 50px;
 
 
@@ -248,7 +258,7 @@ h4{
   margin: 0.5rem 0;
   padding: 1rem;
   border-radius: 10px;
-  border: #9a9a9a;
+  border: #cacaca;
 
 
 }
@@ -292,5 +302,12 @@ h4{
   display: inline-flex;
   letter-spacing: 5px;
   margin-top: 10px;
+  margin-left: 80px;
+
+
+}
+
+.plans-events{
+  margin-left: 100px;
 
 }
