@@ -27,7 +27,7 @@ export const Calendar: React.FC<ChildComponentProps> = (prop) => {
 
 
     useEffect(() => {
-        getEventForCalendar(prop.idOfLogedUser).then((events) => {
+        getEventForCalendar(parseInt(localStorage.id)).then((events) => {
             let eventDatesNew = new Array<DateCalendar>();
             events.forEach(function (e:DateCalendar) {
             eventDatesNew.push({date_time:e.date_time})});
@@ -49,8 +49,7 @@ export const Calendar: React.FC<ChildComponentProps> = (prop) => {
         setDate(date);
 
     }
-
-      
+  
     const setDate = (date:number) =>{
         let tmp:string = '2023-05-';
         if (date < 10) tmp = '2023-05-0';
@@ -114,8 +113,6 @@ export const Calendar: React.FC<ChildComponentProps> = (prop) => {
         for (let i = 0; i < dates.length; i += daysInWeek) {
             tempArray.push(dates.slice(i, i+daysInWeek));
         }
-
-        
 
         return tempArray;
     }

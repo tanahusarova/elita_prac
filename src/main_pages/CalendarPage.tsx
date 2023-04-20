@@ -9,12 +9,12 @@ import PropsNewEvent from "../components/props/PropsNewEvent";
 
 export const CalendarPage = (id:PropsIdUser) => {
 
-    const [informations, setInf] = useState(new SharedInformations('2023-05-14', id.id));
-    const [propsNewEvent, setPropsNewEvent] = useState(new PropsNewEvent(-1, '', '2023-05-14T22:00:00.000Z', '2023-05-14T22:00:00.000Z', '', '#88c20cff', id.id, 1, true));
+    const [informations, setInf] = useState(new SharedInformations('2023-05-14', parseInt(localStorage.id)));
+    const [propsNewEvent, setPropsNewEvent] = useState(new PropsNewEvent(-1, '', '2023-05-14T22:00:00.000Z', '2023-05-14T22:00:00.000Z', '', '#88c20cff', parseInt(localStorage.id), 1, true));
 
 
     function handleDateChoice(d:string) {
-        setInf(new SharedInformations(d, informations.idOfLoggedUser));
+        setInf(new SharedInformations(d, parseInt(localStorage.id)));
         console.log(informations.date + '... calendar page');
 
       }
@@ -35,7 +35,7 @@ export const CalendarPage = (id:PropsIdUser) => {
     return (
         <div className="calendar-page">
             <div className='background-container'>
-            <Calendar handleDateChoice={handleDateChoice} idOfLogedUser={informations.idOfLoggedUser}/> 
+            <Calendar handleDateChoice={handleDateChoice} idOfLogedUser={parseInt(localStorage.id)}/> 
             </div>
             <Plans handleEventChoice={handleEventChoice} sharedInformations={informations}/>
             <NewEvent event={propsNewEvent} sharedInformations={informations}/>

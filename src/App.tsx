@@ -43,6 +43,7 @@ function App() {
     }
     stringToIntId(localStorage.getItem('id'));
     console.log(localStorage.getItem('id'));
+    console.log(localStorage.id);
   }, []);
  
 
