@@ -3,13 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { checkUser, loginUser } from "../api/User";
 
 
-export const Login = () => {
+export const Login = (props) => {
     const userRef = useRef();
     const errRef = useRef();
 
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
     const [errMsg, setErrMsg] = useState();
+    const { logedUser } = props;
 
     let navigate = useNavigate(); 
 
@@ -20,6 +21,9 @@ export const Login = () => {
                 console.log(res)
                 if (res.token) {
                     localStorage.setItem("token", res.token);
+                    localStorage.setItem("id", res.id);
+                    console.log(res.id);
+                    props.logedUser(res.id);
                     navigate("/calendar");
 
             }}).catch((err) => {

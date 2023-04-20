@@ -72,7 +72,6 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
     const [selectionOfParticipants, setSelectionOfParticipants] = useState<Participant[]>([]);
     const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>([]);
     const [hiddenFromParticipants, sethiddenPart] = useState<Participant[]>([]);
-    const [idOfevent, setIdOfEvent] = useState(31);
     const [newE, setNewE] = useState(true);
     const [selectedType, setSelectedType] = useState<OptionType | null>(null);
 
@@ -146,10 +145,10 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
     
 
     const options: OptionType[] = [
-        { value: 1, label: 'school'},
-        { value: 2, label: 'hobby' },
-        { value: 3, label: 'other plans' },
-        { value: 4, label: 'mutual plans' },
+        { value: 2, label: 'school'},
+        { value: 3, label: 'hobby' },
+        { value: 4, label: 'other plans' },
+        { value: 5, label: 'mutual plans' },
 
 
       ]
@@ -163,7 +162,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
           return;
         }
 
-        if (selectedOption.value < 4){
+        if (selectedOption.value <= 4){
           setTypePrivate(true);
           setType(selectedOption.value);
         }
@@ -191,7 +190,6 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
         setDate('2023-05-15');
         setTo(new Date('2023-05-15T22:00:00.000Z'));
         setComment('');
-        deleteEvent(idOfevent);
 
         if (props.event.event_id > 0){
           deleteEvent(props.event.event_id).catch((err)=>{

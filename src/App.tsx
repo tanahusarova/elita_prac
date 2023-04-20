@@ -9,12 +9,27 @@ import PropsIdUser from './components/props/PropsIdUser';
 
 function App() {
   const [currentForm, setCurrentForm] = useState('login');
-  const [idOfLoggedUser, setIdOfUser] = useState(new PropsIdUser(16));
+  const [idOfLoggedUser, setIdOfUser] = useState(new PropsIdUser(1));
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
 
   const toggleForm = (formName:string) => {
     setCurrentForm(formName);
+  }
+
+  function logedUser(id:number) {
+    setIdOfUser(new PropsIdUser(id));
+    let num = '' + id;
+    localStorage.setItem('id', num);
+
+  }
+
+  function stringToIntId(myString: string | null) {
+    if (myString !== null) {
+      setIdOfUser(new PropsIdUser(parseInt(myString)));
+    } else {
+      setIdOfUser(new PropsIdUser(1));
+     }
   }
 
   useEffect(() => {
@@ -26,6 +41,8 @@ function App() {
       // Decode token and get user info and exp
       setIsAuthenticated(true);
     }
+    stringToIntId(localStorage.getItem('id'));
+    console.log(localStorage.getItem('id'));
   }, []);
  
 
@@ -34,7 +51,7 @@ function App() {
     <div className="App">
       {
         <Routes>
-        <Route path="/login" element={isAuthenticated ? <CalendarPage {...idOfLoggedUser}/> : <Login />} />
+        <Route path="/login" element={isAuthenticated ? <CalendarPage {...idOfLoggedUser}/> : <Login logedUser={logedUser}/>} />
         <Route path="/register" element={<Register />} />
         <Route path="/calendar" element={<CalendarPage {...idOfLoggedUser}/>} />
 

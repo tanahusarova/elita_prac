@@ -2,6 +2,29 @@ const getToken = () =>{
     return localStorage.getItem('token');
 }
 
+/*
+async function addEventAJAX(event) {
+    $.ajax({
+        method: "POST",
+        url: '/events/event',
+        headers: {
+            "Content-Type": "application/json",
+            Accept: 'application/json',
+            Authentication: `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify(event),
+        success: (response) => {
+            return response.json();
+        },
+        error: (err) => {
+            throw new Error(response.status);
+
+        }
+
+    });
+}
+*/
+
 async function addEvent(event) {
     let response = await fetch("/events/event", {
         method: "POST",
@@ -13,7 +36,7 @@ async function addEvent(event) {
         body: JSON.stringify(event)
     })
 
-    if (response.status == 200) {
+    if (response.status === 200) {
         let json = await response.json(); 
         console.log(response.json());
         return json;
@@ -33,7 +56,7 @@ async function addEventWithParticipants(event) {
         body: JSON.stringify(event)
     })
 
-    if (response.status == 200) {
+    if (response.status === 200) {
         let json = await response.json(); 
         console.log(response.json());
         return json;
