@@ -52,7 +52,7 @@ function App() {
     <div className="App">
       {
         <Routes>
-        <Route path="/login" element={isAuthenticated ? <CalendarPage {...idOfLoggedUser}/> : <Login logedUser={logedUser}/>} />
+        <Route path="/" element={isAuthenticated ? <CalendarPage {...idOfLoggedUser}/> : <Login logedUser={logedUser}/>} />
         <Route path="/register" element={<Register />} />
         <Route path="/calendar" element={<CalendarPage {...idOfLoggedUser}/>} />
 

@@ -36,7 +36,7 @@ export const Register = (props) => {
     }
 
     const goToLoginPage = async(e) =>{
-        let path = `/login`; //SPYTAT SA NA TUTO CAST
+        let path = `/`; //SPYTAT SA NA TUTO CAST
         navigate(path);
     }
 
