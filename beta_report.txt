@@ -4,6 +4,12 @@ elita
 frontend:https://github.com/tanahusarova/elita_prac/tree/master
 backend:https://github.com/tanahusarova/elita_server
 verejna instancia projektu: https://elita.herokuapp.com/
+rozbehanie: v pripade zaujmu o rozbehanie vlastnej databazy treba vytvorit tabulky zo suboru 
+            elita_tabulky.sql v repozitary a pridat url linku na databazu do env.URL_DATABASE
+        postgres verzia - PostgreSQL 14.7
+        nodejs verzia - Node.js v18.14.2.
+        express verzia - express@4.16.4
+        react - 18.2.0
 
 
 implementovane: 
