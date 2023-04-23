@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const getToken = () =>{
     return localStorage.getItem('token');
 }
@@ -24,6 +26,30 @@ async function addEventAJAX(event) {
     });
 }
 */
+
+
+
+  /*
+  async function addEvent(event) {
+
+    const data = JSON.stringify(event);
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: 'application/json',
+        Authentication: `Bearer ${getToken()}`,
+    }
+
+    axios.post('/events/event', data, { headers })
+   .then(response => {
+    console.log(response.json());
+  })
+  .catch(error => {
+    console.log(error);
+  });
+}
+*/
+
+  
 
 async function addEvent(event) {
     let response = await fetch("/events/event", {

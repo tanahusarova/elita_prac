@@ -20,7 +20,7 @@ export const Register = (props) => {
 
 
     const handleSubmit = async (e) => {
- 
+      e.preventDefault();
       console.log('som tu');
       addUser({nickname:name, mail:email, password:pass}).then((res) => res.json()).then((res) => {
         console.log(res)

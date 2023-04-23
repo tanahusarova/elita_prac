@@ -1,3 +1,4 @@
+
 function addUser(user) {
     return fetch("/users/register", {
         method: "POST",
@@ -7,6 +8,32 @@ function addUser(user) {
         body: JSON.stringify(user)
     });
 }
+
+/*
+import axios from 'axios';
+
+function addUser(user) {
+    const data = {
+        name: user.name,
+        email: user.email,
+        password: user.password
+    };
+
+    const headers = {
+        "Content-Type": "application/json"
+    };
+
+    axios.post('/users/register', JSON.stringify(data), { headers })
+        .then(response => {
+            console.log(response.json());
+        })
+        .catch(error => {
+            console.log(error);
+        });
+}
+
+*/
+
 
 
 function loginUser(user) {

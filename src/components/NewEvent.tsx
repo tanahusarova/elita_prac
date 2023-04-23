@@ -82,7 +82,8 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
 
 
 
-   async function handleSubmit () {
+   async function handleSubmit (e:any) {
+        e.preventDefault();
     //const {id_of_type, name, from, to, date, colour } = body;
   //let string = 'UPDATE events SET type_id = ' + id_of_type + ', name = \'' + name + '\', from_time = \''+ from +
   //'\', to_time = \''+ to +'\', date_time =\''+ date +'\', colour =\'' + colour + '\' WHERE event_id = '+ event_id + ';';
@@ -123,6 +124,18 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
                                   date: date, colour: color }, participants: partArray, observers:obserArray,
                                   comments:{user_id_c:props.sharedInformations.idOfLoggedUser, comment: comment}});
       }
+
+      setName('');
+      setColor('#88c20cff');
+      setTypePrivate(false);
+      setFrom(new Date('2023-05-15T22:00:00.000Z'));
+      setDate('2023-05-15');
+      setTo(new Date('2023-05-15T22:00:00.000Z'));
+      setComment('');
+      setSelectedParticipants([]);
+      setSelectedType(null);
+      setType(3);
+
     }
 
     const handleTimeFrom = (date:Dayjs|null) => {
@@ -308,7 +321,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
              />
         <div className="buttons-new-event">
         <button className="button-front-page" 
-          onClick={() => handleSubmit()}>Save changes</button>
+          onClick={(e) => handleSubmit(e)}>Save changes</button>
         <button className="button-front-page" 
           onClick={() => handleDelete()}>Delete event</button>
         </div>
