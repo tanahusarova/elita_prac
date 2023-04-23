@@ -1,0 +1,35 @@
+Tatiana Husarova
+Elita
+6.tyzden (17.4 - 23.4)
+
+povodny plan: 
+dokoncit autentizaciu, zavesit na server
+
+
+spravene:
+frontend:
+230d04f Fix errors
+1552327 Add betareport
+917b648 Change reading id from localStorage
+c4cb47b Add beta report
+4f08219 Commit before merge with backend
+54af34a Add authorization, Test authorization
+
+backend:
+02ab60d Fix errors
+883a548 Add post with axios
+7802209 Node modules removed
+6463278 Commit before deploy
+8848e5a Add procfile
+e3b73ac Add public folder from build frontend
+43b8353 Commit before hosting
+c3ccf2d Add file for hosting
+32bd190 Add authorization, Test authorization
+
+
+zmena: 
+zavesenie na server zabralo viac casu ako som cakala, bolo treba rozbehavat par chyb s databazou
+
+plan: 
+pridat komponent s ajaxom,
+vyriesit preco sa niektore prvky na hostingu nezobrazuju ako v localhostovi
