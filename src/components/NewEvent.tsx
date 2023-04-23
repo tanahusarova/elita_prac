@@ -195,7 +195,8 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
         setColor(newColor.hex);
       };
 
-      const handleDelete = () => {
+      const handleDelete = (e:any) => {
+        e.preventDefault();
         setName('');
         setColor('#88c20cff');
         setTypePrivate(false);
@@ -323,7 +324,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
         <button className="button-front-page" 
           onClick={(e) => handleSubmit(e)}>Save changes</button>
         <button className="button-front-page" 
-          onClick={() => handleDelete()}>Delete event</button>
+          onClick={(e) => handleDelete(e)}>Delete event</button>
         </div>
         </form>
         </div>

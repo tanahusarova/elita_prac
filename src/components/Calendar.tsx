@@ -87,6 +87,7 @@ export const Calendar: React.FC<ChildComponentProps> = (prop) => {
             else str = '' + date;
 
             let date_full = '2023-05-' + str;
+            console.log('beriem farbu');
             let col:string = getColor(date_full);
 
             let propForButton:ChildComponentPropsButtonDate = new ChildComponentPropsButtonDate(date, str, onButtonClick, prop.idOfLogedUser, col);
@@ -96,16 +97,18 @@ export const Calendar: React.FC<ChildComponentProps> = (prop) => {
         }
     }
 
+
     
     const generateWeeks = (dates: Array<Date>) => {
-        getEventForCalendar(parseInt(localStorage.id)).then((events) => {
+        
+    getEventForCalendar(parseInt(localStorage.id)).then((events) => {
             let eventDatesNew = new Array<DateCalendar>();
             events.forEach(function (e:DateCalendar) {
             eventDatesNew.push({date_time:e.date_time})});
             setEventDates(eventDatesNew);
             console.log(eventDates);
         });
-        
+
         let daysInWeek = 7;
         let tempArray:Array<Date[]> = [];
 
