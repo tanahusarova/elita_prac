@@ -87,7 +87,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
     //const {id_of_type, name, from, to, date, colour } = body;
   //let string = 'UPDATE events SET type_id = ' + id_of_type + ', name = \'' + name + '\', from_time = \''+ from +
   //'\', to_time = \''+ to +'\', date_time =\''+ date +'\', colour =\'' + colour + '\' WHERE event_id = '+ event_id + ';';
-        console.log(setNewE);
+        let id = 1;
 
         let time_fromString:string = '';
         if (time_from) 
@@ -100,14 +100,16 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
         let partArray = new Array<{user_id_p:number}>();
         let obserArray = new Array<{user_id_o:number, visible:boolean}>();
 
+        //  const {id_of_type, name, from, to, date, colour, comment, user_id} = body;
+
         if (!newE){
           updateEvent(props.event.event_id, {id_of_type: type, name:name, from:time_fromString, to:time_toString, 
-                      date:date, colour:color, comment:comment, user_id:props.sharedInformations.idOfLoggedUser});
+                      date:date, colour:color, comment:comment, user_id:id});
 
         }else{
   
-        partArray.push({user_id_p:props.sharedInformations.idOfLoggedUser});
-        obserArray.push({user_id_o:props.sharedInformations.idOfLoggedUser, visible:true});
+        partArray.push({user_id_p:id});
+        obserArray.push({user_id_o:id, visible:true});
 
 
         for (let i = 0; i < selectedParticipants.length; i++){
@@ -135,6 +137,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
       setSelectedParticipants([]);
       setSelectedType(null);
       setType(3);
+      setNewE(true);
 
     }
 
@@ -145,7 +148,8 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
       }
       else {
         {
-          const result = new Date(Date.UTC(date.toDate().getFullYear() , date.toDate().getMonth(), date.toDate().getDate(), date.toDate().getHours(), date.toDate().getMinutes(), date.toDate().getSeconds()));
+          const result = new Date(Date.UTC(date.toDate().getFullYear() , date.toDate().getMonth(), date.toDate().getDate(), 
+                                  date.toDate().getHours(), date.toDate().getMinutes(), date.toDate().getSeconds()));
           setFrom(result);
           setDate(result.toJSON().slice(0, 10));
           console.log(result.toJSON().slice(0, 10));
@@ -204,6 +208,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
         setDate('2023-05-15');
         setTo(new Date('2023-05-15T22:00:00.000Z'));
         setComment('');
+        setNewE(true);
 
         if (props.event.event_id > 0){
           deleteEvent(props.event.event_id).catch((err)=>{

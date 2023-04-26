@@ -16,6 +16,7 @@ type ChildComponentProps = {
 
   type DateCalendar = {
     date_time: string;
+    colour: string;
   };  
 
 moment.tz.setDefault('UTC');
@@ -23,16 +24,20 @@ moment.tz.setDefault('UTC');
 
 export const Calendar: React.FC<ChildComponentProps> = (prop) => {
     const [buttonDateRef, setButtonDateRef] = useState<MutableRefObject<ButtonDateRef | null>>(useRef<ButtonDateRef>(null));
-    const [eventDates, setEventDates] = useState<Array<DateCalendar>>([]);
+    const [eventDates, setEventDates] = useState<Array<DateCalendar>>([{date_time:'toto je povodne', colour: 'hihih'}]);
 
 
     useEffect(() => {
+        let eventDatesNew = new Array<DateCalendar>();
         getEventForCalendar(parseInt(localStorage.id)).then((events) => {
-            let eventDatesNew = new Array<DateCalendar>();
             events.forEach(function (e:DateCalendar) {
-            eventDatesNew.push({date_time:e.date_time})});
+            eventDatesNew.push({date_time:e.date_time, colour:e.colour})});
             setEventDates(eventDatesNew);
+            console.log(eventDatesNew);
             console.log(eventDates);
+            setEventDates(new Array({date_time:'lalala', colour: 'hihih'}))
+            console.log(eventDates);
+
         });
         console.log(eventDates);
       }, []);
@@ -100,15 +105,6 @@ export const Calendar: React.FC<ChildComponentProps> = (prop) => {
 
     
     const generateWeeks = (dates: Array<Date>) => {
-        
-    getEventForCalendar(parseInt(localStorage.id)).then((events) => {
-            let eventDatesNew = new Array<DateCalendar>();
-            events.forEach(function (e:DateCalendar) {
-            eventDatesNew.push({date_time:e.date_time})});
-            setEventDates(eventDatesNew);
-            console.log(eventDates);
-        });
-
         let daysInWeek = 7;
         let tempArray:Array<Date[]> = [];
 
