@@ -53,6 +53,7 @@ class ParticipantP implements Participant{
 type ChildComponentProps = {
   event: PropsNewEvent;
   sharedInformations: SharedInformations;
+  signalChange: () => void;
 };
 
 moment.tz.setDefault('UTC');
@@ -62,7 +63,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
 
     //nazov, typ, farba, od, do, poznamka, kto ma vidiet, kto sa ucasti
     const [name, setName] = useState('');
-    const [type, setType] = useState(3);
+    const [type, setType] = useState(4);
     const [typePrivate, setTypePrivate] = useState(true);
     const [color, setColor] = useState('#88c20cff'); 
     const [time_from, setFrom] = useState<null | Date>(new Date('2023-05-15T22:00:00.000Z'));
@@ -80,14 +81,25 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
     const animatedComponents = makeAnimated();
 
 
+  const resetInputs = () =>{
+    setName('');
+    setType(4);
+    setTypePrivate(true);
+    setColor('#88c20cff');
+    setFrom(new Date('2023-05-15T22:00:00.000Z'));
+    setTo(new Date('2023-05-15T22:00:00.000Z'));
+    setComment('');
+    setDate('2023-05-15');
+    setSelectedParticipants([]);
+    sethiddenPart([]);
+    setNewE(true);
+    setSelectedType(null);
+  }
 
 
    async function handleSubmit (e:any) {
         e.preventDefault();
-    //const {id_of_type, name, from, to, date, colour } = body;
-  //let string = 'UPDATE events SET type_id = ' + id_of_type + ', name = \'' + name + '\', from_time = \''+ from +
-  //'\', to_time = \''+ to +'\', date_time =\''+ date +'\', colour =\'' + colour + '\' WHERE event_id = '+ event_id + ';';
-        let id = 1;
+       let idOfUser = parseInt(localStorage.id);
 
         let time_fromString:string = '';
         if (time_from) 
@@ -100,16 +112,19 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
         let partArray = new Array<{user_id_p:number}>();
         let obserArray = new Array<{user_id_o:number, visible:boolean}>();
 
+        let nameToSave = name;
+        if (!name) nameToSave = 'without name';
+
         //  const {id_of_type, name, from, to, date, colour, comment, user_id} = body;
 
         if (!newE){
-          updateEvent(props.event.event_id, {id_of_type: type, name:name, from:time_fromString, to:time_toString, 
-                      date:date, colour:color, comment:comment, user_id:id});
+          updateEvent(props.event.event_id, {id_of_type: type, name:nameToSave, from:time_fromString, to:time_toString, 
+                      date:date, colour:color, comment:comment, user_id:idOfUser});
 
         }else{
   
-        partArray.push({user_id_p:id});
-        obserArray.push({user_id_o:id, visible:true});
+        partArray.push({user_id_p:idOfUser});
+        obserArray.push({user_id_o:idOfUser, visible:true});
 
 
         for (let i = 0; i < selectedParticipants.length; i++){
@@ -122,23 +137,14 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
         } 
 
 
-        addEventWithParticipants({event:{ id_of_type: type, name: name, from: time_fromString, to: time_toString,
+        addEventWithParticipants({event:{ id_of_type: type, name: nameToSave, from: time_fromString, to: time_toString,
                                   date: date, colour: color }, participants: partArray, observers:obserArray,
-                                  comments:{user_id_c:props.sharedInformations.idOfLoggedUser, comment: comment}});
+                                  comments:{user_id_c:idOfUser, comment: comment}})
+                                  .then((res) => { props.signalChange(); }
+                                  ).catch(err => console.log('problem s pridavanim eventu v new evente'));
       }
-
-      setName('');
-      setColor('#88c20cff');
-      setTypePrivate(false);
-      setFrom(new Date('2023-05-15T22:00:00.000Z'));
-      setDate('2023-05-15');
-      setTo(new Date('2023-05-15T22:00:00.000Z'));
-      setComment('');
-      setSelectedParticipants([]);
-      setSelectedType(null);
-      setType(3);
-      setNewE(true);
-
+      
+     resetInputs();
     }
 
     const handleTimeFrom = (date:Dayjs|null) => {
@@ -201,14 +207,8 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
 
       const handleDelete = (e:any) => {
         e.preventDefault();
-        setName('');
-        setColor('#88c20cff');
-        setTypePrivate(false);
-        setFrom(new Date('2023-05-15T22:00:00.000Z'));
-        setDate('2023-05-15');
-        setTo(new Date('2023-05-15T22:00:00.000Z'));
-        setComment('');
-        setNewE(true);
+        resetInputs();
+        props.signalChange();
 
         if (props.event.event_id > 0){
           deleteEvent(props.event.event_id).catch((err)=>{
@@ -249,6 +249,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
               setSelectedType({value: props.event.type, label:options[i].label});
           }
 
+
           date = new Date(props.event.time_to);
           setTo(new Date(Date.UTC(date.getFullYear() , date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds())));
           setComment(props.event.comment);
@@ -272,7 +273,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
 
             <Select
              placeholder="choose participants..."
-             isDisabled={typePrivate}
+             isDisabled={!newE || typePrivate}
              closeMenuOnSelect={true}
              components={animatedComponents}
              isMulti

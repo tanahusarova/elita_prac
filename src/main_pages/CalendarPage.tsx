@@ -5,13 +5,14 @@ import Plans from "../components/Plans";
 import SharedInformations from "../components/SharedInformations";
 import PropsIdUser from "../components/props/PropsIdUser";
 import PropsNewEvent from "../components/props/PropsNewEvent";
+import { useNavigate } from "react-router-dom";
 
 
 export const CalendarPage = (id:PropsIdUser) => {
 
     const [informations, setInf] = useState(new SharedInformations('2023-05-14', parseInt(localStorage.id)));
     const [propsNewEvent, setPropsNewEvent] = useState(new PropsNewEvent(-1, '', '2023-05-14T22:00:00.000Z', '2023-05-14T22:00:00.000Z', '', '#88c20cff', parseInt(localStorage.id), 1, true));
-
+    const [change, setChange] = useState(false);
 
     function handleDateChoice(d:string) {
         setInf(new SharedInformations(d, parseInt(localStorage.id)));
@@ -23,23 +24,38 @@ export const CalendarPage = (id:PropsIdUser) => {
         setPropsNewEvent(event);
       }
 
-      useEffect(() => {
-      }, []);
+      function signalChange() {
+        setChange(true);
+      }
+
+      function ackChange(){
+        setChange(false);
+      }
 
       useEffect(() => {
         
       }, [informations.date]);
 
+      let navigate = useNavigate();
+      const goToLogoutrPage = async() =>{
+        localStorage.clear();
+        let path = `/logged_out`; 
+        navigate(path);
+    }
 
     //do new event sa musi dostat natiahnuty event z plans, z toho na ktore sa kliklo
     return (
+      <div>
         <div className="calendar-page">
             <div className='background-container'>
-            <Calendar handleDateChoice={handleDateChoice} idOfLogedUser={parseInt(localStorage.id)}/> 
-            </div>
-            <Plans handleEventChoice={handleEventChoice} sharedInformations={informations}/>
-            <NewEvent event={propsNewEvent} sharedInformations={informations}/>
+            <button className="logout-button" onClick={goToLogoutrPage}>Log out</button>
 
+            <Calendar handleDateChoice={handleDateChoice} idOfLogedUser={parseInt(localStorage.id)} render={change} ackChange={ackChange}/> 
+            </div>
+            <Plans handleEventChoice={handleEventChoice} sharedInformations={informations} render={change} ackChange={ackChange}/>
+            <NewEvent event={propsNewEvent} sharedInformations={informations} signalChange={signalChange} />
+
+        </div>
         </div>
     )
 }

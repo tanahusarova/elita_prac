@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import setAuthToken from "./auth";
 import PropsIdUser from './components/props/PropsIdUser';
+import Logout from './main_pages/Logout';
 
 function App() {
   const [currentForm, setCurrentForm] = useState('login');
@@ -55,7 +56,7 @@ function App() {
         <Route path="/" element={isAuthenticated ? <CalendarPage {...idOfLoggedUser}/> : <Login logedUser={logedUser}/>} />
         <Route path="/register" element={<Register />} />
         <Route path="/calendar" element={<CalendarPage {...idOfLoggedUser}/>} />
-
+        <Route path="/logged_out" element={<Logout />} />
         </Routes>
         /*
         currentForm === 'login' ? <Login onFormSwitch={toggleForm} /> :

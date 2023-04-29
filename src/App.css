@@ -79,7 +79,7 @@ napis{
   width: 55%;
   margin: auto;
   position: relative;
-  padding-top: 110px;
+  padding-top: 60px;
 
 
 
@@ -309,5 +309,13 @@ h4{
 
 .plans-events{
   margin-left: 100px;
+
+}
+
+.logout-button{
+  margin: 10px;
+  background-color: #8bc44a4a;
+  color: white;
+  text-align: left;
 
 }

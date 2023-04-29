@@ -12,6 +12,9 @@ import * as moment from 'moment-timezone';
 type ChildComponentProps = {
     handleDateChoice: (id: string) => void;
     idOfLogedUser: number;
+    render: boolean;
+    ackChange: () => void;
+
   };  
 
   type DateCalendar = {
@@ -35,12 +38,39 @@ export const Calendar: React.FC<ChildComponentProps> = (prop) => {
             setEventDates(eventDatesNew);
             console.log(eventDatesNew);
             console.log(eventDates);
-            setEventDates(new Array({date_time:'lalala', colour: 'hihih'}))
-            console.log(eventDates);
 
-        });
+        }).catch(
+            (err)=>{
+                console.log('nacitavanie datumov pre kalendar padlo');
+            }
+        );
         console.log(eventDates);
       }, []);
+
+    
+     useEffect(() => {
+        let eventDatesNew = new Array<DateCalendar>();
+        getEventForCalendar(parseInt(localStorage.id)).then((events) => {
+            events.forEach(function (e:DateCalendar) {
+            eventDatesNew.push({date_time:e.date_time, colour:e.colour})});
+            setEventDates(eventDatesNew);
+            console.log(eventDatesNew);
+            console.log('nacitanie po vyvolani renderovania');
+
+        }).catch(
+            (err)=>{
+                console.log('nacitavanie datumov pre kalendar padlo');
+            }
+        );
+        console.log(eventDates);
+        prop.ackChange();
+      }, [prop.render]);
+
+        
+
+
+    useEffect(() => 
+        console.log("re-render because x changed:", eventDates), [eventDates]);
 
 
     const onButtonClick = (ref: MutableRefObject<ButtonDateRef | null>, date:number) =>{
@@ -65,7 +95,7 @@ export const Calendar: React.FC<ChildComponentProps> = (prop) => {
     }
 
     const getColor = (date:string) => {
-        let date_tmp = date + 'T22:00:00.000Z';
+        let date_tmp = date + 'T00:00:00.000Z';
         for (let i = 0; i < eventDates.length; i++){
             if (eventDates[i].date_time === date_tmp) {
                 console.log(eventDates[i].date_time);

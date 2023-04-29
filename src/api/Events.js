@@ -4,52 +4,6 @@ const getToken = () =>{
     return localStorage.getItem('token');
 }
 
-/*
-async function addEventAJAX(event) {
-    $.ajax({
-        method: "POST",
-        url: '/events/event',
-        headers: {
-            "Content-Type": "application/json",
-            Accept: 'application/json',
-            Authentication: `Bearer ${getToken()}`,
-        },
-        body: JSON.stringify(event),
-        success: (response) => {
-            return response.json();
-        },
-        error: (err) => {
-            throw new Error(response.status);
-
-        }
-
-    });
-}
-*/
-
-
-
-  /*
-  async function addEvent(event) {
-
-    const data = JSON.stringify(event);
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: 'application/json',
-        Authentication: `Bearer ${getToken()}`,
-    }
-
-    axios.post('/events/event', data, { headers })
-   .then(response => {
-    console.log(response.json());
-  })
-  .catch(error => {
-    console.log(error);
-  });
-}
-*/
-
-  
 
 async function addEvent(event) {
     let response = await fetch("/events/event", {
@@ -64,7 +18,6 @@ async function addEvent(event) {
 
     if (response.status === 200) {
         let json = await response.json(); 
-        console.log(response.json());
         return json;
     }
 
@@ -83,9 +36,7 @@ async function addEventWithParticipants(event) {
     })
 
     if (response.status === 200) {
-        let json = await response.json(); 
-        console.log(response.json());
-        return json;
+        return response.json();
     }
 
     throw new Error(response.status);
@@ -166,7 +117,6 @@ async function updateEvent(id_event, body) {
             if (!response.ok) {
                 throw new Error("tato chyba");
             }
-            console.log(response.json());
             return response.json();
         });
 }

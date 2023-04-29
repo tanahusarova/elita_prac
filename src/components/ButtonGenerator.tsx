@@ -14,6 +14,8 @@ import PropsNewEvent from "./props/PropsNewEvent";
 type ChildComponentProps = {
   handleEventChoice: (event:PropsNewEvent) => void;
   forButtonGenerator: PropsButtonGenerator;
+  ackChange: () => void;
+  render:boolean;
 };
 
 export const ButtonGenerator: React.FC<ChildComponentProps> = (prop) => {
@@ -73,7 +75,20 @@ export const ButtonGenerator: React.FC<ChildComponentProps> = (prop) => {
     
 
 
+    useEffect(() => {
+      console.log('new rendering, events has changed')
+      console.log(eventsByDate);
+    }, [eventsByDate]);
+  
+
       
+      useEffect(() => {
+        console.log('nacitavaju sa nove eventy');
+        prop.ackChange();
+        loadEvents();
+      }, [prop.render]);
+      
+
       useEffect(() => {
         console.log('nacitavaju sa nove eventy');
         loadEvents();

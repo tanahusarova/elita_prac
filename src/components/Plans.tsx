@@ -14,6 +14,8 @@ import PropsNewEvent from './props/PropsNewEvent';
 type ChildComponentProps = {
   handleEventChoice: (event: PropsNewEvent) => void;
   sharedInformations: SharedInformations;
+  render: boolean
+  ackChange: () => void;
 };
 
 export const Plans: React.FC<ChildComponentProps> = (prop) => {  
@@ -23,7 +25,7 @@ export const Plans: React.FC<ChildComponentProps> = (prop) => {
   const [propString, setPropString] = useState(new PropsString([], "PLANS"));
   const loginUser = parseInt(localStorage.id); 
   const [watchedUser, setWatchedUser] = useState(parseInt(localStorage.id)); //prepisat na prihlaseneho
-  const [watchedUserName, setWatchedUserName] = useState('Mine');
+  const [watchedUserName, setWatchedUserName] = useState('My');
   const [propsGenerator, setPropGenerator] = useState(new PropsButtonGenerator(loginUser, loginUser, '2023-05-01'));
 
   //erarne sa mu vykresluju jeho plany
@@ -34,7 +36,7 @@ export const Plans: React.FC<ChildComponentProps> = (prop) => {
 const setNewPropString = () => {
   
   let nicknamesArray = new Array<Pair>();
-  nicknamesArray.push({label:'Mine', value:parseInt(localStorage.id)});
+  nicknamesArray.push({label:'My', value:parseInt(localStorage.id)});
   
   getNicknames().then((nicknames)=>{
     nicknames.forEach(function (nick:any) {
@@ -83,7 +85,7 @@ function handleIdChoice(id:number, name:string) {
         <LongMenu forMenu={propString} handleIdChoice={handleIdChoice} />
       </div>
       <div className='plans-events'>
-        <ButtonGenerator handleEventChoice={prop.handleEventChoice} forButtonGenerator={propsGenerator} />
+        <ButtonGenerator handleEventChoice={prop.handleEventChoice} forButtonGenerator={propsGenerator} ackChange={prop.ackChange} render={prop.render}/>
         </div>
     </div>
     );
