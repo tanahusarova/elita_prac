@@ -127,6 +127,9 @@ export const Calendar: React.FC<ChildComponentProps> = (prop) => {
 
             let propForButton:ChildComponentPropsButtonDate = new ChildComponentPropsButtonDate(date, str, onButtonClick, prop.idOfLogedUser, col);
             let result = <ButtonDate {...propForButton} />;
+            if (buttonDateRef?.current) {
+                buttonDateRef.current.changeFont('clicked');
+            }
             return result;
 
         }

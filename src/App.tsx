@@ -56,7 +56,7 @@ function App() {
         <Route path="/" element={isAuthenticated ? <CalendarPage {...idOfLoggedUser}/> : <Login logedUser={logedUser}/>} />
         <Route path="/register" element={<Register />} />
         <Route path="/calendar" element={<CalendarPage {...idOfLoggedUser}/>} />
-        <Route path="/logged_out" element={<Logout />} />
+        <Route path="/logout" element={<Logout />} />
         </Routes>
         /*
         currentForm === 'login' ? <Login onFormSwitch={toggleForm} /> :

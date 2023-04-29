@@ -39,7 +39,7 @@ export const CalendarPage = (id:PropsIdUser) => {
       let navigate = useNavigate();
       const goToLogoutrPage = async() =>{
         localStorage.clear();
-        let path = `/logged_out`; 
+        let path = `/logout`; 
         navigate(path);
     }
 
