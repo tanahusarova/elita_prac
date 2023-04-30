@@ -25,6 +25,7 @@ export const Register = (props) => {
       addUser({nickname:name, mail:email, password:pass}).then((res) => res.json()).then((res) => {
         console.log(res)
         if (res.token) {
+            localStorage.setItem("id", res.id);
             localStorage.setItem("token", res.token);
             navigate("/calendar");
 

@@ -7,6 +7,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import setAuthToken from "./auth";
 import PropsIdUser from './components/props/PropsIdUser';
 import Logout from './main_pages/Logout';
+import { createContext } from 'react';
+import { IdContext } from './components/props/IdContext';
+
 
 function App() {
   const [currentForm, setCurrentForm] = useState('login');

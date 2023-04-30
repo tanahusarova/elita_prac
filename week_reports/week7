@@ -1,0 +1,22 @@
+Tatiana Husarova
+Elita
+7.tyzden (24.4 - 30.4)
+
+povodny plan: 
+pridat komponent s ajaxom,
+vyriesit preco sa niektore prvky na hostingu nezobrazuju ako v localhostovi
+
+spravene:
+fronend:
+4ba9d9a Change format of date
+2002915 Add refresh
+42f081d Fix errors
+backend:
+9a0e28c Commit for hosting
+153adc6 Add refresh
+
+zmena:
+ziadne vacsie zmeny
+
+plan:
+dat appku testovat kamaratom, postupne opravovat chyby ktore vyjdu napovrch
