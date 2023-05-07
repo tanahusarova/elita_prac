@@ -70,10 +70,10 @@ export const ButtonEvent: React.FC<ChildComponentProps> = (prop) => {
         if (date_to.getMinutes() < 10) strMinutesTo = '0' + strMinutesTo;
 
 
-        let string = '\n FROM: ' + (date_from.getDate()) + '.' + date_from.getMonth() + '. at ' + strHoursFrom + ':' + strMinutesFrom ;
+        let string = '\n FROM: ' + (date_from.getDate()) + '.' + (date_from.getMonth() + 1) + '. at ' + strHoursFrom + ':' + strMinutesFrom ;
 
         setText1(string);
-        string =  'TO: ' + (date_from.getDate()) + '.' + date_from.getMonth() + '. at ' + strHoursTo + ':' + strMinutesTo;
+        string =  'TO: ' + (date_to.getDate()) + '.' + (date_to.getMonth() + 1) + '. at ' + strHoursTo + ':' + strMinutesTo;
         setText2(string);
         if(prop.event.event_id < 0) setComment('');
 
@@ -83,6 +83,7 @@ export const ButtonEvent: React.FC<ChildComponentProps> = (prop) => {
 
     const handleClick = () =>{
         if (prop.event.event_id < 0) return;
+        console.log('button event event from time' + prop.event.from_time);
         let comment:string = 'lalalal';
         getComment(prop.event.event_id).then((com)=>{
             if (com.length === 0) {
@@ -122,7 +123,7 @@ export const ButtonEvent: React.FC<ChildComponentProps> = (prop) => {
                     return;
                 }
                 com.forEach(function (value:Comment) {
-                string = string + value.nickname + ': ' + value.comment + ' \n';
+                string = string + " • " + value.nickname + ': ' + value.comment + ' \n';
                 console.log(string);
                 setCommentShow(true);
                 setComment(string);

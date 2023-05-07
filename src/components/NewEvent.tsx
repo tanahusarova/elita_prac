@@ -7,6 +7,7 @@ import OptionTypeBase from "react-select";
 import makeAnimated from 'react-select/animated';
 import { getNicknames } from '../api/User';
 import dayjs, { Dayjs } from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import * as moment from 'moment-timezone';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -23,6 +24,8 @@ import { addComment, addEvent, addEventWithParticipants, addObserver, addPartici
 import { response } from "express";
 import SharedInformations from "./SharedInformations";
 import PropsNewEvent from "./props/PropsNewEvent";
+
+dayjs.extend(utc);
 
 
 interface OptionType {
@@ -70,7 +73,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
     const [time_to, setTo] = useState<null | Date>(new Date('2023-05-15T22:00:00.000Z'));
     const [comment, setComment] = useState('');
     const [date, setDate] = useState('2023-05-15');
-    const [selectionOfParticipants, setSelectionOfParticipants] = useState<Participant[]>([]);
+    const [selectionOfParticipants, setSelectionOfParticipants] = useState<Participant[]>([{value:2, label:'lololo'}, {value:3, label:'hihihi'}]);
     const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>([]);
     const [hiddenFromParticipants, sethiddenPart] = useState<Participant[]>([]);
     const [newE, setNewE] = useState(true);
@@ -102,12 +105,21 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
        let idOfUser = parseInt(localStorage.id);
 
         let time_fromString:string = '';
-        if (time_from) 
-            time_fromString = time_from?.toISOString();
+
+        //do databazy sa uklada UTC
+        if (time_from) {
+      //    let time_from_UTC = new Date(Date.UTC(time_from.getFullYear() , time_from.getMonth(), time_from.getDate(), time_from.getHours(), time_from.getMinutes(), time_from.getSeconds()));
+          time_fromString = time_from?.toISOString();
+          setDate(time_from.toJSON().slice(0, 10));
+        }
 
         let time_toString:string = '';
-        if (time_to) 
-            time_toString = time_to?.toISOString();
+
+        if (time_to) {
+     //     let time_to_UTC = new Date(Date.UTC(time_to.getFullYear() , time_to.getMonth(), time_to.getDate(), time_to.getHours(), time_to.getMinutes(), time_to.getSeconds()));
+          time_toString = time_to?.toISOString();
+
+        }
 
         let partArray = new Array<{user_id_p:number}>();
         let obserArray = new Array<{user_id_o:number, visible:boolean}>();
@@ -154,11 +166,15 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
       }
       else {
         {
-          const result = new Date(Date.UTC(date.toDate().getFullYear() , date.toDate().getMonth(), date.toDate().getDate(), 
-                                  date.toDate().getHours(), date.toDate().getMinutes(), date.toDate().getSeconds()));
-          setFrom(result);
-          setDate(result.toJSON().slice(0, 10));
-          console.log(result.toJSON().slice(0, 10));
+     //     const result = new Date(Date.UTC(date.toDate().getFullYear() , date.toDate().getMonth(), date.toDate().getDate(), 
+     //                             date.toDate().getHours(), date.toDate().getMinutes(), date.toDate().getSeconds()));
+          setFrom(date.toDate());
+
+          if (time_to?.getTime() && (date.toDate().getTime() > time_to?.getTime()))
+                setTo(date.toDate());
+
+          setDate(date.toDate().toJSON().slice(0, 10));
+          console.log(date.toDate().toJSON().slice(0, 10));
         }
 
       }
@@ -182,6 +198,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
         if (selectedOption === null) {
           setTypePrivate(true);
           setSelectedType(selectedOption);
+          setSelectedParticipants([]);
           return;
         }
 
@@ -195,7 +212,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
           setType(selectedOption.value);
 
         }
-
+        setSelectedParticipants([]);
         setSelectedType(selectedOption);
 
       };
@@ -239,9 +256,10 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
           setNewE(props.event.new_event);
           setName(props.event.name);
           let date = new Date(props.event.time_from);
-          setFrom(new Date(Date.UTC(date.getFullYear() , date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds())));
-          setDate(new Date(Date.UTC(date.getFullYear() , date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds())).toJSON().slice(0, 10));
+          setFrom(date);
+          setDate(date.toJSON().slice(0, 10));
           setTypePrivate(true);
+
 
 
           for (let i = 0; i < 4; i++){
@@ -251,9 +269,11 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
 
 
           date = new Date(props.event.time_to);
-          setTo(new Date(Date.UTC(date.getFullYear() , date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds())));
+          setTo(date);
           setComment(props.event.comment);
           setColor(props.event.colour);
+          setSelectedParticipants([]);
+          sethiddenPart([]);
         }
       }, [props.event]);
       
@@ -275,9 +295,10 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
              placeholder="choose participants..."
              isDisabled={!newE || typePrivate}
              closeMenuOnSelect={true}
+             value={selectedParticipants}
              components={animatedComponents}
              isMulti
-             options={selectionOfParticipants}
+             options={selectionOfParticipants.filter(item => !hiddenFromParticipants.includes(item))}
              onChange={(selectedOptions) => 
               setSelectedParticipants(selectedOptions as Participant[])} />
 
@@ -285,6 +306,7 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
             <Select
              closeMenuOnSelect={true}
              isDisabled={!newE}
+             value={hiddenFromParticipants}
              components={animatedComponents}
              isMulti
              options={selectionOfParticipants.filter(item => !selectedParticipants.includes(item))}
@@ -304,13 +326,14 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
             <label htmlFor="time_to">to </label>            
             <DateTimePicker
             value ={dayjs(time_to)}
-            disablePast              
+            disablePast  
+            minDate={dayjs(time_from)}            
             onChange={(newValue) => {
               if (newValue === null)
                   setTo(new Date());
               else {
-                const result = new Date(Date.UTC(newValue.toDate().getFullYear() , newValue.toDate().getMonth(), newValue.toDate().getDate(), newValue.toDate().getHours(), newValue.toDate().getMinutes(), newValue.toDate().getSeconds()));
-                setTo(result);
+             //   const result = new Date(Date.UTC(newValue.toDate().getFullYear() , newValue.toDate().getMonth(), newValue.toDate().getDate(), newValue.toDate().getHours(), newValue.toDate().getMinutes(), newValue.toDate().getSeconds()));
+                setTo(newValue.toDate());
               }
             }}
             views={['year', 'month', 'day', 'hours', 'minutes']}
