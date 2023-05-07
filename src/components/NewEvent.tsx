@@ -300,8 +300,6 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
             value={dayjs(time_from)}
             onChange={(newValue) => handleTimeFrom(newValue)}
             views={['year', 'month', 'day', 'hours', 'minutes']}
-            format="DD.MM.YYYY hh:mm a"
-
             />
             <label htmlFor="time_to">to </label>            
             <DateTimePicker
@@ -316,7 +314,6 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
               }
             }}
             views={['year', 'month', 'day', 'hours', 'minutes']}
-            format="DD.MM.YYYY hh:mm a"
           />
 
             </LocalizationProvider>
