@@ -1,0 +1,42 @@
+Tatiana Husarova
+elita
+
+frontend:https://github.com/tanahusarova/elita_prac/tree/master
+backend:https://github.com/tanahusarova/elita_server
+verejna instancia projektu: https://elita.herokuapp.com/
+rozbehanie: 
+    -> v pripade zaujmu o rozbehanie vlastnej databazy treba vytvorit tabulky zo suboru 
+       elita_tabulky.sql v repozitary a pridat url linku na databazu do env.URL_DATABASE
+    -> po zmene frontendu treba pustit command 'npm run build' a po uspesnom ukonceni prikazu
+       nakopirovat cely obsah priecinka build z frontend projektu do prazdneho priecinka public 
+       v server projekte
+
+verzie: postgres verzia - PostgreSQL 14.7
+        nodejs verzia - Node.js v18.14.2.
+        express verzia - express@4.16.4
+        react - 18.2.0
+
+
+implementovane: 
+prihlasovanie, login, odhlasovanie
+zapisovanie, modifikacia a vymazavanie vlastnych eventov,
+vyber pouzivatela, ktoreho eventy sa maju zobrazovat,
+vykreslovanie jednotlivych eventov a zaznacovanie dni s eventami
+
+problemy:
+v procese tvorby skoro so vsetkym :D najvacsi problem bolo nazaciatku pochopit koncept
+celeho procesu komunikovania aplikacie s databazou a neskor aj sposob prihlasovania (co sa tyka praktickej roviny)
+neskor boli hlavnymi (uz mensimi) problemami jednotlive komponenty frontendu a casove udaje
+
+Keby ste to robili znovu, čo by ste urobili inak?
+ - Asi by som sa viac zamyslela nad strukturou projektu nez som sa 'vrhla' do programovania, aj ked si
+myslim, ze by som vsetko postavila velmi podobne. V priebehu som vsak dorabala vela callbackov a propsov,
+s ktorymi som vopred neratala a tento proces bol nielen zmatocny ale aj frustrujucejsi ako by bol, 
+keby s nimi ratam dopredu.
+
+Ste hrdý na výsledky svojej práce? Ktorý aspekt projektu je podľa Vás najviac kvalitný?
+ - Uprimne som na seba velmi hrda, nakolko som v strede semestra pochybovala ci tento projekt vobec budem 
+schopna dokoncit :D Uvedomujem si, ze by sa vela veci dalo zlepsit a keby som ich mala premyslene odzaciatku
+neboli, by ani take narocne na implementaciu. Elitu vsak povazujem za moj prvy projekt co sa tyka webovych aplikacii,
+pri ktorom som sa velmi vela naucila a paci sa mi aj vo verzii v ktorej je teraz :) Najviac kvalitny posudit neviem,
+ale paci sa mi automaticka aktualizacia novopridanych eventov a design :)

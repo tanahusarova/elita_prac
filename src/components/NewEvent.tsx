@@ -7,7 +7,6 @@ import OptionTypeBase from "react-select";
 import makeAnimated from 'react-select/animated';
 import { getNicknames } from '../api/User';
 import dayjs, { Dayjs } from 'dayjs';
-import utc from 'dayjs/plugin/utc';
 import * as moment from 'moment-timezone';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -24,9 +23,6 @@ import { addComment, addEvent, addEventWithParticipants, addObserver, addPartici
 import { response } from "express";
 import SharedInformations from "./SharedInformations";
 import PropsNewEvent from "./props/PropsNewEvent";
-
-dayjs.extend(utc);
-
 
 interface OptionType {
   value: number;
@@ -69,28 +65,44 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
     const [type, setType] = useState(4);
     const [typePrivate, setTypePrivate] = useState(true);
     const [color, setColor] = useState('#88c20cff'); 
-    const [time_from, setFrom] = useState<null | Date>(new Date('2023-05-15T22:00:00.000Z'));
-    const [time_to, setTo] = useState<null | Date>(new Date('2023-05-15T22:00:00.000Z'));
+    const [time_from, setFrom] = useState<null | Date>(new Date('2023-05-15T00:06:00.000Z'));
+    const [time_to, setTo] = useState<null | Date>(new Date('2023-05-15T00:07:00.000Z'));
     const [comment, setComment] = useState('');
     const [date, setDate] = useState('2023-05-15');
-    const [selectionOfParticipants, setSelectionOfParticipants] = useState<Participant[]>([{value:2, label:'lololo'}, {value:3, label:'hihihi'}]);
+    const [selectionOfParticipants, setSelectionOfParticipants] = useState<Participant[]>([]);
     const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>([]);
     const [hiddenFromParticipants, sethiddenPart] = useState<Participant[]>([]);
     const [newE, setNewE] = useState(true);
     const [selectedType, setSelectedType] = useState<OptionType | null>(null);
+    
 
 
 
     const animatedComponents = makeAnimated();
 
+/*
+    const getTimezoneOffset = (value:Date) => {
+      console.log(value.getTimezoneOffset());
+      return value.getTimezoneOffset() * 60000;
+    }
+
+
+    const localToUTC = (dateTime:Date) => {
+      
+      const utcFromLocal = new Date(dateTime.getTime() - getTimezoneOffset(dateTime));
+      console.log(utcFromLocal);
+      return utcFromLocal;
+    };
+
+*/
 
   const resetInputs = () =>{
     setName('');
     setType(4);
     setTypePrivate(true);
     setColor('#88c20cff');
-    setFrom(new Date('2023-05-15T22:00:00.000Z'));
-    setTo(new Date('2023-05-15T22:00:00.000Z'));
+    setFrom(new Date('2023-05-15T00:07:00.000Z'));
+    setTo(new Date('2023-05-15T00:10:00.000Z'));
     setComment('');
     setDate('2023-05-15');
     setSelectedParticipants([]);
@@ -110,7 +122,10 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
         if (time_from) {
       //    let time_from_UTC = new Date(Date.UTC(time_from.getFullYear() , time_from.getMonth(), time_from.getDate(), time_from.getHours(), time_from.getMinutes(), time_from.getSeconds()));
           time_fromString = time_from?.toISOString();
-          setDate(time_from.toJSON().slice(0, 10));
+          let date_for_date:Date = time_from;
+          const twoHoursInMillis = 2 * 60 * 60 * 1000; 
+          if (time_from.getHours() < 2 || time_from.getHours() > 22) date_for_date = new Date(time_from.getTime() + twoHoursInMillis);
+          setDate(date_for_date.toJSON().slice(0, 10));        
         }
 
         let time_toString:string = '';
@@ -169,12 +184,15 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
      //     const result = new Date(Date.UTC(date.toDate().getFullYear() , date.toDate().getMonth(), date.toDate().getDate(), 
      //                             date.toDate().getHours(), date.toDate().getMinutes(), date.toDate().getSeconds()));
           setFrom(date.toDate());
-
-          if (time_to?.getTime() && (date.toDate().getTime() > time_to?.getTime()))
+          console.log(date.toDate());
+          if (time_to?.getTime() && ((date.toDate()).getTime() > time_to?.getTime()))
                 setTo(date.toDate());
 
-          setDate(date.toDate().toJSON().slice(0, 10));
-          console.log(date.toDate().toJSON().slice(0, 10));
+          let date_for_date:Date = date.toDate();
+          const twoHoursInMillis = 2 * 60 * 60 * 1000; 
+          if (date.toDate().getHours() < 2 || date.toDate().getHours() > 22) date_for_date = new Date(date.toDate().getTime() + twoHoursInMillis);
+          setDate(date_for_date.toJSON().slice(0, 10));
+          console.log(date_for_date.toJSON().slice(0, 10));
         }
 
       }
@@ -252,15 +270,18 @@ export const NewEvent: React.FC<ChildComponentProps> = (props) => {
       }, []);
 
       useEffect(() => {
+        //tu uz dostavam utc datumy
         if (props.event.idOfWathedUser === props.sharedInformations.idOfLoggedUser){
           setNewE(props.event.new_event);
           setName(props.event.name);
           let date = new Date(props.event.time_from);
           setFrom(date);
-          setDate(date.toJSON().slice(0, 10));
+
+          let date_for_date:Date = date;
+          const twoHoursInMillis = 2 * 60 * 60 * 1000; 
+          if (date.getHours() < 2 || date.getHours() > 22) date_for_date = new Date(date.getTime() + twoHoursInMillis);
+          setDate(date_for_date.toJSON().slice(0, 10)); 
           setTypePrivate(true);
-
-
 
           for (let i = 0; i < 4; i++){
             if (options[i].value === props.event.type)
